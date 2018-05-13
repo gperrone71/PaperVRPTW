@@ -1,0 +1,23 @@
+<objects.GeoRefConfig>
+  <nNumInstance>0</nNumInstance>
+  <strCity>na</strCity>
+  <iRadius>0</iRadius>
+  <dbScalingFactor>0.0</dbScalingFactor>
+  <dbPopDensity>0.0</dbPopDensity>
+  <blCustomersUniformSpread>true</blCustomersUniformSpread>
+  <dbResourcesToClientRatio>0.0</dbResourcesToClientRatio>
+  <iNumResources>0</iNumResources>
+  <bFullResourcesAvailability>true</bFullResourcesAvailability>
+  <bResReturnToStart>true</bResReturnToStart>
+  <bAllResourcesHaveSamePos>true</bAllResourcesHaveSamePos>
+  <cResourcesStartingPosition>C</cResourcesStartingPosition>
+  <dStartingPositionsSpread>0.0</dStartingPositionsSpread>
+  <bExtendedTimeWin>true</bExtendedTimeWin>
+  <iResMinStartingTime>0</iResMinStartingTime>
+  <iResMinAvailabilityTime>0</iResMinAvailabilityTime>
+  <iTskMinStartingTime>0</iTskMinStartingTime>
+  <iTskMinTimeWindowWidth>0</iTskMinTimeWindowWidth>
+  <iTskMinServiceTimeDuration>0</iTskMinServiceTimeDuration>
+  <iTskMaxServiceTimeDuration>0</iTskMaxServiceTimeDuration>
+  <iTskServiceTimeSpread>0</iTskServiceTimeSpread>
+</objects.GeoRefConfig>

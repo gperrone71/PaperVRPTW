@@ -1,0 +1,105 @@
+<objects.BatchConfig>
+  <nResources>200</nResources>
+  <nTasks>2000</nTasks>
+  <maxX>200</maxX>
+  <maxY>200</maxY>
+  <iNumThreads>7</iNumThreads>
+  <bGenerateTestSet>false</bGenerateTestSet>
+  <bFullResourcesAvailability>false</bFullResourcesAvailability>
+  <bResReturnToStart>true</bResReturnToStart>
+  <bAllResourcesHaveSamePos>false</bAllResourcesHaveSamePos>
+  <cResourcesStartingPosition>C</cResourcesStartingPosition>
+  <dStartingPositionsSpread>10.0</dStartingPositionsSpread>
+  <bExtendedTimeWin>false</bExtendedTimeWin>
+  <iResMinStartingTime>480</iResMinStartingTime>
+  <iResMinAvailabilityTime>480</iResMinAvailabilityTime>
+  <iTskMinStartingTime>480</iTskMinStartingTime>
+  <iTskMinTimeWindowWidth>240</iTskMinTimeWindowWidth>
+  <iTskMinServiceTimeDuration>30</iTskMinServiceTimeDuration>
+  <iTskMaxServiceTimeDuration>90</iTskMaxServiceTimeDuration>
+  <iTskServiceTimeSpread>30</iTskServiceTimeSpread>
+</objects.BatchConfig>
+<objects.BatchConfig>
+  <nResources>200</nResources>
+  <nTasks>2000</nTasks>
+  <maxX>200</maxX>
+  <maxY>200</maxY>
+  <iNumThreads>7</iNumThreads>
+  <bGenerateTestSet>false</bGenerateTestSet>
+  <bFullResourcesAvailability>false</bFullResourcesAvailability>
+  <bResReturnToStart>true</bResReturnToStart>
+  <bAllResourcesHaveSamePos>false</bAllResourcesHaveSamePos>
+  <cResourcesStartingPosition>C</cResourcesStartingPosition>
+  <dStartingPositionsSpread>10.0</dStartingPositionsSpread>
+  <bExtendedTimeWin>false</bExtendedTimeWin>
+  <iResMinStartingTime>480</iResMinStartingTime>
+  <iResMinAvailabilityTime>480</iResMinAvailabilityTime>
+  <iTskMinStartingTime>480</iTskMinStartingTime>
+  <iTskMinTimeWindowWidth>240</iTskMinTimeWindowWidth>
+  <iTskMinServiceTimeDuration>30</iTskMinServiceTimeDuration>
+  <iTskMaxServiceTimeDuration>90</iTskMaxServiceTimeDuration>
+  <iTskServiceTimeSpread>30</iTskServiceTimeSpread>
+</objects.BatchConfig>
+<objects.BatchConfig>
+  <nResources>200</nResources>
+  <nTasks>2000</nTasks>
+  <maxX>200</maxX>
+  <maxY>200</maxY>
+  <iNumThreads>7</iNumThreads>
+  <bGenerateTestSet>false</bGenerateTestSet>
+  <bFullResourcesAvailability>false</bFullResourcesAvailability>
+  <bResReturnToStart>true</bResReturnToStart>
+  <bAllResourcesHaveSamePos>false</bAllResourcesHaveSamePos>
+  <cResourcesStartingPosition>C</cResourcesStartingPosition>
+  <dStartingPositionsSpread>10.0</dStartingPositionsSpread>
+  <bExtendedTimeWin>false</bExtendedTimeWin>
+  <iResMinStartingTime>480</iResMinStartingTime>
+  <iResMinAvailabilityTime>480</iResMinAvailabilityTime>
+  <iTskMinStartingTime>480</iTskMinStartingTime>
+  <iTskMinTimeWindowWidth>240</iTskMinTimeWindowWidth>
+  <iTskMinServiceTimeDuration>30</iTskMinServiceTimeDuration>
+  <iTskMaxServiceTimeDuration>90</iTskMaxServiceTimeDuration>
+  <iTskServiceTimeSpread>30</iTskServiceTimeSpread>
+</objects.BatchConfig>
+<objects.BatchConfig>
+  <nResources>200</nResources>
+  <nTasks>2000</nTasks>
+  <maxX>200</maxX>
+  <maxY>200</maxY>
+  <iNumThreads>7</iNumThreads>
+  <bGenerateTestSet>false</bGenerateTestSet>
+  <bFullResourcesAvailability>false</bFullResourcesAvailability>
+  <bResReturnToStart>true</bResReturnToStart>
+  <bAllResourcesHaveSamePos>false</bAllResourcesHaveSamePos>
+  <cResourcesStartingPosition>C</cResourcesStartingPosition>
+  <dStartingPositionsSpread>10.0</dStartingPositionsSpread>
+  <bExtendedTimeWin>false</bExtendedTimeWin>
+  <iResMinStartingTime>480</iResMinStartingTime>
+  <iResMinAvailabilityTime>480</iResMinAvailabilityTime>
+  <iTskMinStartingTime>480</iTskMinStartingTime>
+  <iTskMinTimeWindowWidth>240</iTskMinTimeWindowWidth>
+  <iTskMinServiceTimeDuration>30</iTskMinServiceTimeDuration>
+  <iTskMaxServiceTimeDuration>90</iTskMaxServiceTimeDuration>
+  <iTskServiceTimeSpread>30</iTskServiceTimeSpread>
+</objects.BatchConfig>
+<objects.BatchConfig>
+  <nResources>200</nResources>
+  <nTasks>2000</nTasks>
+  <maxX>200</maxX>
+  <maxY>200</maxY>
+  <iNumThreads>7</iNumThreads>
+  <bGenerateTestSet>true</bGenerateTestSet>
+  <bFullResourcesAvailability>false</bFullResourcesAvailability>
+  <bResReturnToStart>true</bResReturnToStart>
+  <bAllResourcesHaveSamePos>false</bAllResourcesHaveSamePos>
+  <cResourcesStartingPosition>C</cResourcesStartingPosition>
+  <dStartingPositionsSpread>10.0</dStartingPositionsSpread>
+  <bExtendedTimeWin>false</bExtendedTimeWin>
+  <iResMinStartingTime>480</iResMinStartingTime>
+  <iResMinAvailabilityTime>480</iResMinAvailabilityTime>
+  <iTskMinStartingTime>480</iTskMinStartingTime>
+  <iTskMinTimeWindowWidth>240</iTskMinTimeWindowWidth>
+  <iTskMinServiceTimeDuration>30</iTskMinServiceTimeDuration>
+  <iTskMaxServiceTimeDuration>90</iTskMaxServiceTimeDuration>
+  <iTskServiceTimeSpread>30</iTskServiceTimeSpread>
+</objects.BatchConfig>

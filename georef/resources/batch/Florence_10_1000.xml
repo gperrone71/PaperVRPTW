@@ -1,0 +1,23 @@
+<objects.GeoRefConfig>
+  <nNumInstances>2</nNumInstances>
+  <strCity>Florence</strCity>
+  <iRadius>10</iRadius>
+  <dbScalingFactor>1000</dbScalingFactor>
+  <dbPopDensity>1500</dbPopDensity>
+  <blCustomersUniformSpread>true</blCustomersUniformSpread>
+  <dbResourcesToClientRatio>0.0</dbResourcesToClientRatio>
+  <iNumResources>100</iNumResources>
+  <bFullResourcesAvailability>false</bFullResourcesAvailability>
+  <bResReturnToStart>true</bResReturnToStart>
+  <bAllResourcesHaveSamePos>false</bAllResourcesHaveSamePos>
+  <cResourcesStartingPosition>C</cResourcesStartingPosition>
+  <dStartingPositionsSpread>10.0</dStartingPositionsSpread>
+  <bExtendedTimeWin>false</bExtendedTimeWin>
+  <iResMinStartingTime>480</iResMinStartingTime>
+  <iResMinAvailabilityTime>480</iResMinAvailabilityTime>
+  <iTskMinStartingTime>480</iTskMinStartingTime>
+  <iTskMinTimeWindowWidth>240</iTskMinTimeWindowWidth>
+  <iTskMinServiceTimeDuration>30</iTskMinServiceTimeDuration>
+  <iTskMaxServiceTimeDuration>90</iTskMaxServiceTimeDuration>
+  <iTskServiceTimeSpread>30</iTskServiceTimeSpread>
+</objects.GeoRefConfig>

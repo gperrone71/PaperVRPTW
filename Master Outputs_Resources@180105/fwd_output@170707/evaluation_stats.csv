@@ -1,0 +1,6 @@
+numResources;dbMaxX;dbMaxY;stDSName;dbPrecision;dbRecall;dbAbsCorrectlyClassified;dbPerCorrectlyClassified;dbAbsUncorrectlyClassified;dbPerUncorrectlyClassified
+2000;0,0;0,0;output/Batch200_2000_d01/DS_2000_200_batch0_stats,arff;0,7745347580630134;0,785;1570,0;78,5;430,0;21,5
+2000;0,0;0,0;output/Batch200_2000_d01//DS_2000_200_batch1_stats,arff;0,7712096715837174;0,7845;1569,0;78,45;431,0;21,55
+2000;0,0;0,0;output/Batch200_2000_d01///DS_2000_200_batch2_stats,arff;0,7842108153964283;0,7905;1581,0;79,05;419,0;20,95
+2000;0,0;0,0;output/Batch200_2000_d01////DS_2000_200_batch3_stats,arff;0,7559947149867875;0,765;1530,0;76,5;470,0;23,5
+2000;0,0;0,0;output/Batch200_2000_d01/////DS_2000_200_batch4_stats,arff;0,7647660314579553;0,7775;1555,0;77,75;445,0;22,25
