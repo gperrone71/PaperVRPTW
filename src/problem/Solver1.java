@@ -22,14 +22,22 @@ import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
 import com.graphhopper.jsprit.core.util.RandomNumberGeneration;
 import com.graphhopper.jsprit.core.util.Solutions;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.security.NoTypePermission;
 
 import objects.*;
 import parsers.GenerateWorldFromXML;
 import utils.NumericUtils;
 import utils.PerroUtils;
 import utils.SimpleStats;
+import utils.XMLUtils;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -116,17 +124,64 @@ public class Solver1 {
 	 * Solves the loaded dataset using the jsprit toolkit. 
 	 * Requires the method initSolver to be called first in order to choose the selected dataset to be solved
 	 * 
+	 * modified on 18/05/18 to add possibility of storing solutions results (useful when solving full ds)
+	 * 
 	 * @author gperr
 	 * 
 	 * @return SolStats an object of SolStats type that includes stats data for this execution of the solver
 	 * @param bVerbose specify if solver has to print extended data on console or not
+	 * @param bUseStoredSolution specify if the solver has to look for stored solutions first (if stored solutions do not exist a new one will be created after solving)
 	 * @param bResReturnToStart	specify is resources need to return to the starting point or go to the destination point
 	 * @param strFullPath specifies the full path (including final "/") where outputs have to be stored
 	 */
 	
-	public SolStats launchSolver(boolean bVerbose, boolean bResReturnToStart, int iNumThreadsToUse, String strFullPath) {
+	public SolStats launchSolver(boolean bVerbose, boolean bUseStoredSolution, boolean bResReturnToStart, int iNumThreadsToUse, String strFullPath) {
 
 		PerroUtils.print("Initializing the solver...", true);
+
+		// full file name for the solution file
+		String solutionFileName = strFullPath + PerroUtils.returnFullFileNameWOExtension(strNameOfDS)+"_solution.xml";
+
+		// first of all check if I want to use stored solutions
+		if (bUseStoredSolution) {
+			if (Files.exists(Paths.get(solutionFileName))) {
+				PerroUtils.print("Found solution file : " + solutionFileName, true);
+
+				// file with solution exists -> read it and return the solution object
+				SolStats solution = new SolStats();
+
+				// generates a new xml stream
+				XStream xstream = new XStream();
+
+				// security permissions for XStream
+				
+				// clear out existing permissions and set own ones
+				xstream.addPermission(NoTypePermission.NONE);
+				xstream.allowTypeHierarchy(SolStats.class);
+
+				List<String> lstString = new ArrayList<String>();
+
+				// all lines from files are read and put in an arraylist
+				try {
+					lstString= Files.readAllLines(Paths.get(solutionFileName), StandardCharsets.UTF_8);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+				// convert list to a string
+				String strFileContents = "";
+				for (String str : lstString)
+					strFileContents += str;
+				
+				// and then extracts the object from the XML file
+				solution = (SolStats)xstream.fromXML(strFileContents);
+				
+				return solution;
+			} else 
+				PerroUtils.print("Solution file : " + solutionFileName + " not found - launching the solver.");
+				
+		}
 		
 		// creates a new instance of a VRP builder
         VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
@@ -261,7 +316,7 @@ public class Solver1 {
         PerroUtils.print(" \n");
 
         PerroUtils.print("++++++   TIME WINDOW VIOLATION : " + a.getTimeWindowViolation());
-        PerroUtils.print("++++++   Number of pickups	: " + a.getNumberOfPickups());
+        PerroUtils.print("++++++   Number of pickups     : " + a.getNumberOfPickups());
         PerroUtils.print("++++++   Number of jobs unass  : " + bestSolution.getUnassignedJobs().size());      
         PerroUtils.print("++++++   Number of vehicles    : " + bestSolution.getRoutes().size());
         PerroUtils.print("++++++   Operation Time        : " + a.getOperationTime());
@@ -302,6 +357,28 @@ public class Solver1 {
 
 //        new GraphStreamViewer(problem, bestSolution).labelWith(Label.ID).setRenderDelay(200).display();
 
+        // if bUseStoredSolution flag is set then write on disk the solution data
+        if (bUseStoredSolution) {
+			// instantiate xstream object and set it to absolute references (i.e. do not use references at all)
+			XStream xstream = new XStream();
+			xstream.setMode(XStream.NO_REFERENCES);
+			
+			// XML file generation
+			List<String> lstString = new ArrayList<String>();
+	
+			String xmlOut = xstream.toXML(solStats);
+			lstString.add(xmlOut);
+					
+			PerroUtils.print("Attempting to write solution file " + solutionFileName + " on disk....", true);
+			
+			try {
+				Files.write(Paths.get(solutionFileName), lstString, StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+        }
+        
+        // return the object with the data on the solution
         return solStats;       
 	}
 	
@@ -707,7 +784,7 @@ public class Solver1 {
 		
 		Solver1 tmp = new Solver1("", "DS_50_5.xml");
 		
-		tmp.launchSolver(true, true, 6, "output/");
+		tmp.launchSolver(true, false, true, 6, "output/");
 		
 		tmp.generateStats();
 		

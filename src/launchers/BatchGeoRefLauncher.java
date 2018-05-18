@@ -144,7 +144,7 @@ public class BatchGeoRefLauncher {
 				SolStats tmp = new SolStats();
 				
 				// launch the solver and stores the results (threads always set to 24 by default)
-				tmp = problemSolver.launchSolver(false, batchObj.isbResReturnToStart(), 24, strFullPath);
+				tmp = problemSolver.launchSolver(false, true, batchObj.isbResReturnToStart(), 24, strFullPath);
 				
 				// sets the other variables by using the method to calc maxX and maxY in the solver
 				problemSolver.calcMaxAndDensity();

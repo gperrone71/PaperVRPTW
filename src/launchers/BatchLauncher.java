@@ -149,8 +149,8 @@ public class BatchLauncher {
 				// generate a temp SolStats object
 				SolStats tmp = new SolStats();
 				
-				// launch the solver and stores the results
-				tmp = problemSolver.launchSolver(false, batchObj.isbResReturnToStart(), batchObj.getiNumThreads(), strFullPath);
+				// launch the solver and stores the results setting also the store results to disk flag
+				tmp = problemSolver.launchSolver(false, true, batchObj.isbResReturnToStart(), batchObj.getiNumThreads(), strFullPath);
 				
 				// sets the other variables
 				tmp.setDbMaxX(batchObj.getMaxX());

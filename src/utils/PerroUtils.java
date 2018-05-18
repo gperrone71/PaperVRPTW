@@ -47,6 +47,16 @@ public class PerroUtils {
 			System.out.println(LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")) + " : " + strPrint);
 		}
 
+		/**
+		 * Returns a string with the full path and file name without the extension - to be used to generate arff or xml file names
+		 * 
+		 * @param str String containing the full path and filename
+		 * @return String string without extension
+		 */
+		public static String returnFullFileNameWOExtension (String str) {
+			return str.substring(0, str.indexOf('.'));
+		}
+
 /** 
  * Mostra un messaggio di dialogo di informazione con parametri passati come argomenti
  * @param infoMessage - il testo del messaggio principale
@@ -271,5 +281,5 @@ public class PerroUtils {
 		numRnd.setSeed(System.currentTimeMillis());			// set the current seed
 		return numRnd;
 	}
-	
+
 }

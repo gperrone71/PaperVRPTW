@@ -288,9 +288,10 @@ public class BatchClassifier {
 				    tmpClassStat.setNumResources(lstResources.size());
 					tmpClassStat.setiNumThreads(24);
 	
-					// launch the solver on the original problem with the specified number of threads and stores the results			
+					// launch the solver on the original problem with the specified number of threads and stores the results
+					// for the original problem I want the results to be stored on disk
 				    SolStats tmpSolStat = new SolStats();		    
-				    tmpSolStat = problemSolver.launchSolver(false, bTestSetResourcesReturnToOrigin, 24, strPathTmp);
+				    tmpSolStat = problemSolver.launchSolver(false, true, bTestSetResourcesReturnToOrigin, 24, strPathTmp);
 
 				    // calculates maxX and maxY and density
 				    problemSolver.calcMaxAndDensity();
@@ -330,8 +331,8 @@ public class BatchClassifier {
 					// generates another solver object using the pruned dataset 
 					Solver1 prunedProblemSolver = new Solver1(strPathTmp, strPrunedXMLFileName);
 					
-					// launch the solver on the pruned problem with 7 threads and stores the results
-				    tmpSolStat = prunedProblemSolver.launchSolver(false, bTestSetResourcesReturnToOrigin, 24, strPathTmp);
+					// launch the solver on the pruned problem with 24 threads and stores the results w/o storing solution results
+				    tmpSolStat = prunedProblemSolver.launchSolver(false, false, bTestSetResourcesReturnToOrigin, 24, strPathTmp);
 	
 				    // and copies the relevant information in the ClassifierStats object in the section for the pruned dataset
 					tmpClassStat.setNumTasks_P(lstPrunedTasks.size());
@@ -476,8 +477,8 @@ public class BatchClassifier {
 					// generates another solver object using the pruned dataset 
 					Solver1 RNDPrunedProblemSolver = new Solver1(strPathTmp, strPrRNDXMLFileName);
 					
-					// launch the solver on the pruned problem with 7 threads and stores the results
-				    tmpSolStat = RNDPrunedProblemSolver.launchSolver(false, bTestSetResourcesReturnToOrigin, 24, strPathTmp);
+					// launch the solver on the pruned problem with 7 threads and stores the results w/o storing solution results
+				    tmpSolStat = RNDPrunedProblemSolver.launchSolver(false, false, bTestSetResourcesReturnToOrigin, 24, strPathTmp);
 
 				    // and add the information on the execution to the stats object
 				    // and copies the relevant information in the ClassifierStats object in the section for the pruned dataset
@@ -535,8 +536,8 @@ public class BatchClassifier {
 					// generates another solver object using the pruned dataset 
 					Solver1 RND2PrunedProblemSolver = new Solver1(strPathTmp, strPrRND2XMLFileName);
 					
-					// launch the solver on the pruned problem with 7 threads and stores the results
-				    tmpSolStat = RND2PrunedProblemSolver.launchSolver(false, bTestSetResourcesReturnToOrigin, 24, strPathTmp);
+					// launch the solver on the pruned problem with 7 threads and stores the results w/o storing solution results
+				    tmpSolStat = RND2PrunedProblemSolver.launchSolver(false, false, bTestSetResourcesReturnToOrigin, 24, strPathTmp);
 
 				    // and add the information on the execution to the stats object
 				    // and copies the relevant information in the ClassifierStats object in the section for the pruned dataset
