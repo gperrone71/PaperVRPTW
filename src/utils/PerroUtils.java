@@ -1,5 +1,6 @@
 package utils;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,6 +20,8 @@ import java.util.zip.Checksum;
 import javax.swing.JOptionPane;
 import javax.xml.soap.Node;
 
+import org.apache.commons.io.FileUtils;
+
 import objects.TimeInterval;
 
 /** 
@@ -29,6 +32,36 @@ import objects.TimeInterval;
  * 
  */
 public class PerroUtils {
+
+	/**
+	 * Checks if a directory exists or not - if yes cleans all contents, if no then create it
+	 * 
+	 * @param String full path of the folder to check / create
+	 * @param boolean Specifies if, when the folder exists, contents have to be deleted or not
+	 */
+	public static boolean prepareFolder(String strFullPath, boolean bWipeContents) {
+	
+		File dir = new File(strFullPath);
+		// if the directory does not exist, create it
+		if (!dir.exists()) {
+			PerroUtils.print("creating directory " + strFullPath, true);
+			boolean result = dir.mkdir();  
+			if(result) 	{
+				PerroUtils.print(strFullPath + " created ok", true);
+				return true;
+			}
+		} else 
+			// directory exists : wipe all contents if flag if true
+			try {
+				if (bWipeContents) 
+						FileUtils.cleanDirectory(new File(strFullPath));
+				return true;
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		return false;
+	}
 
 	/**
 	 * Scrive sulla console la stringa passata come argomento usando il metodo println 

@@ -40,6 +40,11 @@ public class BatchConfig {
 	
 	private boolean bGenerateTestSet;				// if true, a separate file w/ unlabeled instances is generated to be used as test set
 
+	// type of dataset
+	private char cTaskDistribution;					// specifies the type of tasks distribution (U = uniform random, C = cluster, R = 50% random + 50% cluster)
+	private int iNumClusters;						// specifies the number of clusters to be used (can be omitted)
+	private double dExpFactor;						// lambda (exp of the exponential distribution used for clusters generation)
+	
 	// RESOURCES parameters
 	// space
 	private boolean bFullResourcesAvailability;		// forces all resources to have maximum availability window 
@@ -394,6 +399,71 @@ public class BatchConfig {
 
 	public void setnNumInstances(int nNumInstances) {
 		this.nNumInstances = nNumInstances;
+	}
+
+
+	public char getcTaskDistribution() {
+		return cTaskDistribution;
+	}
+
+
+	public void setcTaskDistribution(char cTaskDistribution) {
+		this.cTaskDistribution = cTaskDistribution;
+	}
+
+
+	public int getiNumClusters() {
+		return iNumClusters;
+	}
+
+
+	public void setiNumClusters(int iNumClusters) {
+		this.iNumClusters = iNumClusters;
+	}
+
+
+	public void setiResMinStartingTime(int iResMinStartingTime) {
+		this.iResMinStartingTime = iResMinStartingTime;
+	}
+
+
+	public void setiResMinAvailabilityTime(int iResMinAvailabilityTime) {
+		this.iResMinAvailabilityTime = iResMinAvailabilityTime;
+	}
+
+
+	public void setiTskMinStartingTime(int iTskMinStartingTime) {
+		this.iTskMinStartingTime = iTskMinStartingTime;
+	}
+
+
+	public void setiTskMinTimeWindowWidth(int iTskMinTimeWindowWidth) {
+		this.iTskMinTimeWindowWidth = iTskMinTimeWindowWidth;
+	}
+
+
+	public void setiTskMinServiceTimeDuration(int iTskMinServiceTimeDuration) {
+		this.iTskMinServiceTimeDuration = iTskMinServiceTimeDuration;
+	}
+
+
+	public void setiTskMaxServiceTimeDuration(int iTskMaxServiceTimeDuration) {
+		this.iTskMaxServiceTimeDuration = iTskMaxServiceTimeDuration;
+	}
+
+
+	public void setiTskServiceTimeSpread(int iTskServiceTimeSpread) {
+		this.iTskServiceTimeSpread = iTskServiceTimeSpread;
+	}
+
+
+	public double getdExpFactor() {
+		return dExpFactor;
+	}
+
+
+	public void setdExpFactor(double dExpFactor) {
+		this.dExpFactor = dExpFactor;
 	}
 
 

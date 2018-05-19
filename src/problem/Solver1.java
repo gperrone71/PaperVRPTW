@@ -140,7 +140,8 @@ public class Solver1 {
 		PerroUtils.print("Initializing the solver...", true);
 
 		// full file name for the solution file
-		String solutionFileName = strFullPath + PerroUtils.returnFullFileNameWOExtension(strNameOfDS)+"_solution.xml";
+		String solutionPathName = strFullPath + "solutions/"; 
+		String solutionFileName = solutionPathName + PerroUtils.returnFullFileNameWOExtension(strNameOfDS)+"_solution.xml";
 
 		// first of all check if I want to use stored solutions
 		if (bUseStoredSolution) {
@@ -179,7 +180,7 @@ public class Solver1 {
 				
 				return solution;
 			} else 
-				PerroUtils.print("Solution file : " + solutionFileName + " not found - launching the solver.");
+				PerroUtils.print("Solution file : " + solutionFileName + " not found - launching the solver.", true);
 				
 		}
 		
@@ -302,9 +303,12 @@ public class Solver1 {
 		solStats.setiTotUnserviced(bestSolution.getUnassignedJobs().size());
 
 		/*
-         * plot
+         * plot solution
+         * creates the "pics" subdir if doesn't exist
+         * 
 		 */
-        new Plotter(problem,bestSolution).setLabel(Plotter.Label.ID).plot(strFullPath + "plot" + strNameOfDS, strNameOfDS);
+        if (PerroUtils.prepareFolder(strFullPath + "pics", false)) 
+        	new Plotter(problem,bestSolution).setLabel(Plotter.Label.ID).plot(strFullPath + "/pics/plot" + PerroUtils.returnFullFileNameWOExtension(strNameOfDS), strNameOfDS);
 
         SolutionAnalyser a = new SolutionAnalyser(problem, bestSolution, new TransportDistance() {
             @Override
@@ -368,13 +372,17 @@ public class Solver1 {
 	
 			String xmlOut = xstream.toXML(solStats);
 			lstString.add(xmlOut);
-					
-			PerroUtils.print("Attempting to write solution file " + solutionFileName + " on disk....", true);
 			
-			try {
-				Files.write(Paths.get(solutionFileName), lstString, StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-			} catch (IOException e) {
-				e.printStackTrace();
+			// check if output folder exists and if not create it
+			if (PerroUtils.prepareFolder(solutionPathName, false)) {
+						
+				PerroUtils.print("Attempting to write solution file " + solutionFileName + " on disk....", true);
+				
+				try {
+					Files.write(Paths.get(solutionFileName), lstString, StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+				} catch (IOException e) {
+					e.printStackTrace();
+				} 
 			}
         }
         

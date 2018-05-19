@@ -154,7 +154,8 @@ public class BatchClassifier {
 		    		// inner loop:
 		    		// select the evaluation test set for the object currently loaded
 		    		objFileParse.setbTestSet(true);
-	
+		    		char cDSType = objFileParse.getStrFileName().charAt(0);		// stores the type of DS in order to be able to use it later
+		    		
 		    		// init variables
 		    		List<Task> lstPrunedTasks = new ArrayList<Task>();
 		    		List<Resource> lstPrunedResources = new ArrayList<Resource>();
@@ -262,10 +263,13 @@ public class BatchClassifier {
 					lstResources = problemSolver.getLstResources();
 		
 					// and using the strings generated so far save on disk stats for the generated classifier
-					Charset chEnc = Charset.forName("utf-8");
-					File tmpFile = new File(strPathTmp + "model_stats_" + lstFileToBeParsed.indexOf(objFileParse) + ".txt");
-					FileUtils.writeStringToFile(tmpFile, eval.toSummaryString(), chEnc);
-					FileUtils.writeStringToFile(tmpFile, eval.toClassDetailsString("\nClass Details\n"), chEnc, true);		
+					// First check if the folder exists or not and if folder prep operation successful writes relevant stats
+					if (PerroUtils.prepareFolder(strPathTmp + "model/", false)) {
+						Charset chEnc = Charset.forName("utf-8");
+						File tmpFile = new File(strPathTmp + "model/" + "model_stats_" + lstFileToBeParsed.indexOf(objFileParse) + ".txt");
+						FileUtils.writeStringToFile(tmpFile, eval.toSummaryString(), chEnc);
+						FileUtils.writeStringToFile(tmpFile, eval.toClassDetailsString("\nClass Details\n"), chEnc, true);
+					}
 		
 					// copy the resources in the pruned version (it won't change)
 					lstPrunedResources = lstResources;
@@ -281,7 +285,7 @@ public class BatchClassifier {
 				    
 				    // write the XML file on disk
 				    GenerateDataSet tmpGDS = new GenerateDataSet();
-				    String strPrunedXMLFileName = tmpGDS.WriteDataSetOnFile(lstPrunedTasks, lstPrunedResources, strPathTmp , "_" + lstFileToBeParsed.indexOf(objFileParse) + "_PRUNED" );
+				    String strPrunedXMLFileName = tmpGDS.WriteDataSetOnFile(cDSType, lstPrunedTasks, lstPrunedResources, strPathTmp , "_" + lstFileToBeParsed.indexOf(objFileParse) + "_PRUNED" );
 				    
 				    // generate a temp ClassifierStats object and starts populating it
 				    ClassifierStats tmpClassStat = new ClassifierStats();
@@ -472,7 +476,7 @@ public class BatchClassifier {
 				    
 				    // write the XML file on disk
 				    GenerateDataSet tmpGDS_RND = new GenerateDataSet();
-				    String strPrRNDXMLFileName = tmpGDS_RND.WriteDataSetOnFile(lstPrRndTasks, lstResources, strPathTmp , "_" + lstFileToBeParsed.indexOf(objFileParse) + "_PRRND" );
+				    String strPrRNDXMLFileName = tmpGDS_RND.WriteDataSetOnFile(cDSType, lstPrRndTasks, lstResources, strPathTmp , "_" + lstFileToBeParsed.indexOf(objFileParse) + "_PRRND" );
 				    
 					// generates another solver object using the pruned dataset 
 					Solver1 RNDPrunedProblemSolver = new Solver1(strPathTmp, strPrRNDXMLFileName);
@@ -531,7 +535,7 @@ public class BatchClassifier {
 	
 				    // write the XML file on disk
 				    GenerateDataSet tmpGDS_RND2 = new GenerateDataSet();
-				    String strPrRND2XMLFileName = tmpGDS_RND2.WriteDataSetOnFile(lstPrRnd2Tasks, lstResources, strPathTmp , "_" + lstFileToBeParsed.indexOf(objFileParse) + "_PRRND2" );
+				    String strPrRND2XMLFileName = tmpGDS_RND2.WriteDataSetOnFile(cDSType, lstPrRnd2Tasks, lstResources, strPathTmp , "_" + lstFileToBeParsed.indexOf(objFileParse) + "_PRRND2" );
 				    
 					// generates another solver object using the pruned dataset 
 					Solver1 RND2PrunedProblemSolver = new Solver1(strPathTmp, strPrRND2XMLFileName);

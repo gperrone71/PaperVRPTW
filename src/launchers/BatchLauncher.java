@@ -65,21 +65,9 @@ public class BatchLauncher {
 			strPathToStrip = strConfigFileName;
 		String strFullPath = "output/"+strConfigFileName.substring(strPathToStrip.indexOf('/')+1, strPathToStrip.indexOf('.'));
 */
-		
-		File dir = new File(strFullPath);
 		// if the directory does not exist, create it
-		if (!dir.exists()) {
-			PerroUtils.print("creating directory " + strFullPath, true);
-			boolean result = dir.mkdir();  
-			if(result) 	PerroUtils.print(strFullPath + " created ok", true);  
-		} else 
-			// directory exists : wipe all contents
-			try {
-				FileUtils.cleanDirectory(new File(strFullPath));
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+
+		PerroUtils.prepareFolder(strFullPath, true);
 		strFullPath += "/";		// add a final "/" to ensure String represents a real path
 		
 		// generates a new xml stream

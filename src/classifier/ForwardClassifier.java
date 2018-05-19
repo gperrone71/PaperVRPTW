@@ -129,7 +129,8 @@ public class ForwardClassifier {
 						int iNumFile = 0;
 						for (final File fileInDir : filObj2.listFiles()) {
 							if (fileInDir.getName().contains("_stats.arff")) {
-				
+								char cDSType = fileInDir.getName().charAt(0);
+								
 								String strPathToBeEvaluated = strFolderInEvaluation;
 
 								String fileNameTestSet = strPathToBeEvaluated + "/" + fileInDir.getName();
@@ -228,7 +229,7 @@ public class ForwardClassifier {
 							    
 							    // write the XML file on disk
 							    GenerateDataSet tmpGDS = new GenerateDataSet();
-							    String strPrunedXMLFileName = tmpGDS.WriteDataSetOnFile(lstPrunedTasks, lstPrunedResources, "fwd_output/" , "_PRUNED_" + iNumFile++);
+							    String strPrunedXMLFileName = tmpGDS.WriteDataSetOnFile(cDSType, lstPrunedTasks, lstPrunedResources, "fwd_output/" , "_PRUNED_" + iNumFile++);
 							    
 							    // generate a temp ClassifierStats object and starts populating it
 							    ClassifierStats tmpClassStat = new ClassifierStats();
