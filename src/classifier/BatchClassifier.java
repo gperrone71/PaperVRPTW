@@ -125,7 +125,6 @@ public class BatchClassifier {
 		PerroUtils.print("\n-BATCH CLASSIFIER----------------------------------------------------------------");
 		PerroUtils.print("\nStarting training phase.");
 
-
 		// outer loop: loop for all ARFF files present in the specified output directory
 		final File filObj = new File(strPath);
 		PerroUtils.print(filObj.getPath());
@@ -154,7 +153,7 @@ public class BatchClassifier {
 		    		// inner loop:
 		    		// select the evaluation test set for the object currently loaded
 		    		objFileParse.setbTestSet(true);
-		    		char cDSType = objFileParse.getStrFileName().charAt(0);		// stores the type of DS in order to be able to use it later
+		    		String strDSFileNamePrefix = returnDSFileNamePrefix(objFileParse.getStrFileName());		// stores the type of DS in order to be able to use it later
 		    		
 		    		// init variables
 		    		List<Task> lstPrunedTasks = new ArrayList<Task>();
@@ -285,7 +284,7 @@ public class BatchClassifier {
 				    
 				    // write the XML file on disk
 				    GenerateDataSet tmpGDS = new GenerateDataSet();
-				    String strPrunedXMLFileName = tmpGDS.WriteDataSetOnFile(cDSType, lstPrunedTasks, lstPrunedResources, strPathTmp , "_" + lstFileToBeParsed.indexOf(objFileParse) + "_PRUNED" );
+				    String strPrunedXMLFileName = tmpGDS.WriteDataSetOnFile(strDSFileNamePrefix, lstPrunedTasks, lstPrunedResources, strPathTmp , "_" + lstFileToBeParsed.indexOf(objFileParse) + "_PRUNED" );
 				    
 				    // generate a temp ClassifierStats object and starts populating it
 				    ClassifierStats tmpClassStat = new ClassifierStats();
@@ -476,7 +475,7 @@ public class BatchClassifier {
 				    
 				    // write the XML file on disk
 				    GenerateDataSet tmpGDS_RND = new GenerateDataSet();
-				    String strPrRNDXMLFileName = tmpGDS_RND.WriteDataSetOnFile(cDSType, lstPrRndTasks, lstResources, strPathTmp , "_" + lstFileToBeParsed.indexOf(objFileParse) + "_PRRND" );
+				    String strPrRNDXMLFileName = tmpGDS_RND.WriteDataSetOnFile(strDSFileNamePrefix, lstPrRndTasks, lstResources, strPathTmp , "_" + lstFileToBeParsed.indexOf(objFileParse) + "_PRRND" );
 				    
 					// generates another solver object using the pruned dataset 
 					Solver1 RNDPrunedProblemSolver = new Solver1(strPathTmp, strPrRNDXMLFileName);
@@ -535,7 +534,7 @@ public class BatchClassifier {
 	
 				    // write the XML file on disk
 				    GenerateDataSet tmpGDS_RND2 = new GenerateDataSet();
-				    String strPrRND2XMLFileName = tmpGDS_RND2.WriteDataSetOnFile(cDSType, lstPrRnd2Tasks, lstResources, strPathTmp , "_" + lstFileToBeParsed.indexOf(objFileParse) + "_PRRND2" );
+				    String strPrRND2XMLFileName = tmpGDS_RND2.WriteDataSetOnFile(strDSFileNamePrefix, lstPrRnd2Tasks, lstResources, strPathTmp , "_" + lstFileToBeParsed.indexOf(objFileParse) + "_PRRND2" );
 				    
 					// generates another solver object using the pruned dataset 
 					Solver1 RND2PrunedProblemSolver = new Solver1(strPathTmp, strPrRND2XMLFileName);
@@ -620,6 +619,16 @@ public class BatchClassifier {
 	 */
 	private String returnFullFileNameWOExtension (String str) {
 		return str.substring(0, str.indexOf('.'));
+	}
+	
+	/**
+	 * Returns a string with the prefix of the ds file name (essentially all chars before the first "_")
+	 * 
+	 * @param str String containing the full path and filename
+	 * @return String string without extension
+	 */
+	private String returnDSFileNamePrefix (String str) {
+		return str.substring(0, str.indexOf('_'));
 	}
 	
 	

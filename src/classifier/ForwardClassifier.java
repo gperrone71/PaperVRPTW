@@ -129,7 +129,7 @@ public class ForwardClassifier {
 						int iNumFile = 0;
 						for (final File fileInDir : filObj2.listFiles()) {
 							if (fileInDir.getName().contains("_stats.arff")) {
-								char cDSType = fileInDir.getName().charAt(0);
+								String strDSFileNamePrefix = returnDSFileNamePrefix(fileInDir.getName());
 								
 								String strPathToBeEvaluated = strFolderInEvaluation;
 
@@ -229,7 +229,7 @@ public class ForwardClassifier {
 							    
 							    // write the XML file on disk
 							    GenerateDataSet tmpGDS = new GenerateDataSet();
-							    String strPrunedXMLFileName = tmpGDS.WriteDataSetOnFile(cDSType, lstPrunedTasks, lstPrunedResources, "fwd_output/" , "_PRUNED_" + iNumFile++);
+							    String strPrunedXMLFileName = tmpGDS.WriteDataSetOnFile(strDSFileNamePrefix, lstPrunedTasks, lstPrunedResources, "fwd_output/" , "_PRUNED_" + iNumFile++);
 							    
 							    // generate a temp ClassifierStats object and starts populating it
 							    ClassifierStats tmpClassStat = new ClassifierStats();
@@ -343,7 +343,17 @@ public class ForwardClassifier {
 		return str.substring(0, str.indexOf('.'));
 	}
 	
+	/**
+	 * Returns a string with the prefix of the ds file name (essentially all chars before the first "_")
+	 * 
+	 * @param str String containing the full path and filename
+	 * @return String string without extension
+	 */
+	private String returnDSFileNamePrefix (String str) {
+		return str.substring(0, str.indexOf('_'));
+	}
 	
+
 	/**
 	 * Generates a CSV file from the EvalutionStats list (containing statistics for model's evaluation statistics) and optionally prints on console its contents 
 	 * 

@@ -41,8 +41,10 @@ public class BatchConfig {
 	private boolean bGenerateTestSet;				// if true, a separate file w/ unlabeled instances is generated to be used as test set
 
 	// type of dataset
-	private char cTaskDistribution;					// specifies the type of tasks distribution (U = uniform random, C = cluster, R = 50% random + 50% cluster)
-	private int iNumClusters;						// specifies the number of clusters to be used (can be omitted)
+	private char cTaskDistribution;					// specifies the type of tasks distribution (U = uniform random, C = cluster, R = partially random partially cluster w/ ratio defined by the relevant parameter)
+	private int iNumClusters;						// specifies the number of clusters to be used (can be omitted - if omitted or set to zero number of clusters is set by code)
+	private double dRDSClusteredTasksRatio;			// for R type dataset: % of tasks to be included in clusters
+	private char cClusterType;						// for C and R datasets: specifies number of tasks per clusters (U = uniform -> n = t/c; G = gaussian -> t = sample of a gaussian distrib with avg = t/c and sigma = t/c)
 	private double dExpFactor;						// lambda (exp of the exponential distribution used for clusters generation)
 	
 	// RESOURCES parameters
@@ -464,6 +466,26 @@ public class BatchConfig {
 
 	public void setdExpFactor(double dExpFactor) {
 		this.dExpFactor = dExpFactor;
+	}
+
+
+	public double getdRDSClusteredTasksRatio() {
+		return dRDSClusteredTasksRatio;
+	}
+
+
+	public void setdRDSClusteredTasksRatio(double dRDSClusteredTasksRatio) {
+		this.dRDSClusteredTasksRatio = dRDSClusteredTasksRatio;
+	}
+
+
+	public char getcClusterType() {
+		return cClusterType;
+	}
+
+
+	public void setcClusterType(char cClusterType) {
+		this.cClusterType = cClusterType;
 	}
 
 
