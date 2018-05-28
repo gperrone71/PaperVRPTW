@@ -1,5 +1,5 @@
 <objects.BatchConfig>
-  <nNumInstances>5</nNumInstances>
+  <nNumInstances>20</nNumInstances>
   <nResources>10</nResources>
   <nTasks>100</nTasks>
   <maxX>32</maxX>

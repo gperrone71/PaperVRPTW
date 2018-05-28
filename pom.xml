@@ -93,6 +93,10 @@
   		<groupId>nz.ac.waikato.cms.weka</groupId>
   		<artifactId>weka-stable</artifactId>
   	</dependency>
+  	<dependency>
+  		<groupId>org.simplejavamail</groupId>
+  		<artifactId>simple-java-mail</artifactId>
+  	</dependency>
   </dependencies>
   <dependencyManagement>
   	<dependencies>
@@ -180,6 +184,11 @@
   			<groupId>nz.ac.waikato.cms.weka</groupId>
   			<artifactId>weka-stable</artifactId>
   			<version>3.8.2</version>
+  		</dependency>
+  		<dependency>
+  			<groupId>org.simplejavamail</groupId>
+  			<artifactId>simple-java-mail</artifactId>
+  			<version>5.0.3</version>
   		</dependency>
   	</dependencies>
   </dependencyManagement>

@@ -5,16 +5,16 @@
   <dbMaxY>0.0</dbMaxY>
   <dbTasksDensity>0.0</dbTasksDensity>
   <numSolutionsFound>2</numSolutionsFound>
-  <dblExecutionTime>7.065</dblExecutionTime>
+  <dblExecutionTime>7.188</dblExecutionTime>
   <iNumThreads>24</iNumThreads>
-  <iTotServiced>86</iTotServiced>
-  <iTotUnserviced>14</iTotUnserviced>
-  <dbTraveledDistance>274.66702827065393</dbTraveledDistance>
-  <dbTotalCosts>659.2008678495695</dbTotalCosts>
+  <iTotServiced>83</iTotServiced>
+  <iTotUnserviced>17</iTotUnserviced>
+  <dbTraveledDistance>326.2294528903028</dbTraveledDistance>
+  <dbTotalCosts>880.8195228038177</dbTotalCosts>
   <dbTimeWinViolation>0.0</dbTimeWinViolation>
   <iNumVehiclesUsed>10</iNumVehiclesUsed>
-  <dbOperationTime>5313.196895426805</dbOperationTime>
-  <dbTransportTime>274.66702827065365</dbTransportTime>
-  <dbServiceTime>4988.0</dbServiceTime>
-  <dbWaitingTime>50.52986715615123</dbWaitingTime>
+  <dbOperationTime>5058.459740714781</dbOperationTime>
+  <dbTransportTime>326.2294528903027</dbTransportTime>
+  <dbServiceTime>4707.0</dbServiceTime>
+  <dbWaitingTime>25.230287824479547</dbWaitingTime>
 </objects.SolStats>
