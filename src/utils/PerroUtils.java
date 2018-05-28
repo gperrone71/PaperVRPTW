@@ -21,6 +21,10 @@ import javax.swing.JOptionPane;
 import javax.xml.soap.Node;
 
 import org.apache.commons.io.FileUtils;
+import org.simplejavamail.email.Email;
+import org.simplejavamail.email.EmailBuilder;
+import org.simplejavamail.mailer.MailerBuilder;
+import org.simplejavamail.mailer.config.TransportStrategy;
 
 import objects.TimeInterval;
 
@@ -33,6 +37,20 @@ import objects.TimeInterval;
  */
 public class PerroUtils {
 
+	/**
+	 * Sends an email using the EmailBuilder configured for Yahoo. Useful to store config param only in one place
+	 * 
+	 * @param Email the Email object to be sent
+	 * 
+	 */
+	public static void emailSender(Email email) {
+		MailerBuilder
+		  .withSMTPServer("smtp.mail.yahoo.com", 465, "gperrone71@yahoo.it", "shdehqroqqrssrvo")
+		  .withTransportStrategy(TransportStrategy.SMTPS)
+		  .buildMailer()
+		  .sendMail(email);
+	}
+	
 	/**
 	 * Checks if a directory exists or not - if yes cleans all contents, if no then create it
 	 * 

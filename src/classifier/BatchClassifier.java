@@ -36,6 +36,10 @@ import weka.classifiers.evaluation.Evaluation;
 import weka.classifiers.meta.AttributeSelectedClassifier;
 import weka.core.Instances;
 import weka.core.converters.ArffLoader;
+import org.simplejavamail.email.Email;
+import org.simplejavamail.email.EmailBuilder;
+import org.simplejavamail.mailer.MailerBuilder;
+import org.simplejavamail.mailer.config.TransportStrategy;
 
 /**
  * Class implementing a batch series of training - evaluation jobs performed following configurations described in xml config file
@@ -131,6 +135,9 @@ public class BatchClassifier {
 		
 		final FileNameExtensionFilter extensionFilter = new FileNameExtensionFilter("ARFF", "arff");
 
+		String strEmailBody = "Started batch classifier job for file " + strPath ;
+		long timeNow = System.currentTimeMillis();
+		
 		// create a list of the .arff files that are available in the selected folder
 		for (final File fileInDir : filObj.listFiles()) {
 			if ( extensionFilter.accept(fileInDir) ) 
@@ -140,9 +147,21 @@ public class BatchClassifier {
 					tmp.setStrFileName(fileInDir.getName());
 					tmp.setbTestSet(false);
 					lstFileToBeParsed.add(tmp);
+					strEmailBody += "\n" + fileInDir.getName();
 				}
 		}
 		
+		strEmailBody += "\n#" + lstFileToBeParsed.size() + " files to be processed:";
+		
+		// prepare email object
+		Email email = EmailBuilder.startingBlank()
+			    .from("Giovanni Perrone", "gperrone71@yahoo.it")
+			    .to("Me", "gperrone71@gmail.com")
+			    .withSubject("PAPERVRPTW: Start Classifier job " + strPath)
+			    .withPlainText(strEmailBody)
+			    .buildEmail();
+		PerroUtils.emailSender(email);
+
 		// outer loop: execute per each of the .arff file stored in the file list
 		for (FileParse tmpObj : lstFileToBeParsed)
 			tmpObj.setbTestSet(false);		
@@ -151,6 +170,7 @@ public class BatchClassifier {
 		    	
 		    	for (FileParse objFileParse : lstFileToBeParsed) {
 		    		// inner loop:
+		    		
 		    		// select the evaluation test set for the object currently loaded
 		    		objFileParse.setbTestSet(true);
 		    		String strDSFileNamePrefix = returnDSFileNamePrefix(objFileParse.getStrFileName());		// stores the type of DS in order to be able to use it later
@@ -597,7 +617,15 @@ public class BatchClassifier {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-					    
+		// prepare email object
+		long elapsedTime = (System.currentTimeMillis() - timeNow)/1000;
+		Email finalEmail = EmailBuilder.startingBlank()
+			    .from("Giovanni Perrone", "gperrone71@yahoo.it")
+			    .to("Me", "gperrone71@gmail.com")
+			    .withSubject("PAPERVRPTW: END Classifier job " + strPath)
+			    .withPlainText("Processing complete after " + elapsedTime + " s (" + elapsedTime/3600 + " hours)")
+			    .buildEmail();
+		PerroUtils.emailSender(finalEmail);			    
 	}
 		
 
