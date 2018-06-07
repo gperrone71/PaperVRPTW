@@ -17,6 +17,7 @@ import java.util.Random;
 import java.util.zip.CRC32;
 import java.util.zip.Checksum;
 
+import javax.mail.MessagingException;
 import javax.swing.JOptionPane;
 import javax.xml.soap.Node;
 
@@ -44,11 +45,17 @@ public class PerroUtils {
 	 * 
 	 */
 	public static void emailSender(Email email) {
+		try {
 		MailerBuilder
 		  .withSMTPServer("smtp.mail.yahoo.com", 465, "gperrone71@yahoo.it", "shdehqroqqrssrvo")
 		  .withTransportStrategy(TransportStrategy.SMTPS)
 		  .buildMailer()
-		  .sendMail(email);
+		   .sendMail(email);
+		  } catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				PerroUtils.print("Unable to send email");
+			}
 	}
 	
 	/**

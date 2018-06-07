@@ -13,6 +13,8 @@ import java.util.List;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.apache.commons.io.FileUtils;
+import org.simplejavamail.email.Email;
+import org.simplejavamail.email.EmailBuilder;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.security.NoTypePermission;
@@ -88,6 +90,19 @@ public class BatchLauncher {
 		if (lstString == null)
 			return false;
 
+		// send email for the starting point
+		// prepare email object and send it at the beginning of the generation
+		long timeNow = System.currentTimeMillis();
+
+		Email email = EmailBuilder.startingBlank()
+			    .from("Giovanni Perrone", "gperrone71@yahoo.it")
+			    .to("Me", "gperrone71@gmail.com")
+			    .withSubject("PAPERVRPTW: Start Batch Launcher for " + strConfigFileName)
+			    .withPlainText("PAPERVRPTW: Start Batch Launcher for " + strConfigFileName)
+			    .buildEmail();
+		PerroUtils.emailSender(email);
+		
+		
 		// Read the xml configuration file and populates the list of the jobs to be executed
 		PerroUtils.print("-BATCH LAUNCHER--------------------------------------------------------------------");
 		PerroUtils.print(" Config file   : " + strConfigFileName);
@@ -167,6 +182,16 @@ public class BatchLauncher {
 
 		PerroUtils.print("** END OF BATCH ** -- generated " + (iInstancesCounter+1) + " instances --------------------------------");
 
+		// prepare email object
+		long elapsedTime = (System.currentTimeMillis() - timeNow)/1000;
+		Email finalEmail = EmailBuilder.startingBlank()
+			    .from("Giovanni Perrone", "gperrone71@yahoo.it")
+			    .to("Me", "gperrone71@gmail.com")
+			    .withSubject("PAPERVRPTW: END Classifier job " + strConfigFileName)
+			    .withPlainText("Processing complete after " + elapsedTime + " s (" + elapsedTime/3600 + " hours) \nGenerated " + (iInstancesCounter+1) + " instances." )
+			    .buildEmail();
+		PerroUtils.emailSender(finalEmail);		
+		
 		return true;
 	}
 	
