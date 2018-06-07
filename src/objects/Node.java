@@ -78,4 +78,15 @@ public class Node {
 		
 	}
 	
+	/**
+	 * Returns the Euclidean distance between this node and another one passed as parameters
+	 * 
+	 * @param nd1, nd2 the two nodes to be used to calculate the distance
+	 */
+	public double getDistanceFromNode(Node nd1) {
+	    double xcoord = Math.abs (this.getLatitude()- nd1.getLatitude());
+	    double ycoord = Math.abs (this.getLongitude()- nd1.getLongitude());
+		return Math.sqrt(ycoord*ycoord + xcoord*xcoord); 
+	}
+	
 }

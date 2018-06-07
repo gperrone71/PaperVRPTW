@@ -1,19 +1,19 @@
 <objects.BatchConfig>
-  <nNumInstances>20</nNumInstances>
-  <nResources>10</nResources>
-  <nTasks>100</nTasks>
-  <maxX>32</maxX>
-  <maxY>32</maxY>
+  <nNumInstances>1</nNumInstances>
+  <nResources>100</nResources>
+  <nTasks>1000</nTasks>
+  <maxX>500</maxX>
+  <maxY>500</maxY>
   <iNumThreads>24</iNumThreads>
   <bGenerateTestSet>false</bGenerateTestSet>
   <cTaskDistribution>C</cTaskDistribution>
   <iNumClusters>8</iNumClusters>
   <dRDSClusteredTasksRatio>0.7</dRDSClusteredTasksRatio>
   <cClusterType>G</cClusterType>
-  <dExpFactor>1</dExpFactor>
+  <dExpFactor>0.01</dExpFactor>
   <bFullResourcesAvailability>false</bFullResourcesAvailability>
   <bResReturnToStart>true</bResReturnToStart>
-  <bAllResourcesHaveSamePos>false</bAllResourcesHaveSamePos>
+  <bAllResourcesHaveSamePos>true</bAllResourcesHaveSamePos>
   <cResourcesStartingPosition>C</cResourcesStartingPosition>
   <dStartingPositionsSpread>2.0</dStartingPositionsSpread>
   <bExtendedTimeWin>false</bExtendedTimeWin>
@@ -26,21 +26,21 @@
   <iTskServiceTimeSpread>30</iTskServiceTimeSpread>
 </objects.BatchConfig>
 <objects.BatchConfig>
-  <nNumInstances>20</nNumInstances>
-  <nResources>10</nResources>
-  <nTasks>100</nTasks>
-  <maxX>32</maxX>
-  <maxY>32</maxY>
+  <nNumInstances>1</nNumInstances>
+  <nResources>100</nResources>
+  <nTasks>1000</nTasks>
+  <maxX>500</maxX>
+  <maxY>500</maxY>
   <iNumThreads>24</iNumThreads>
   <bGenerateTestSet>false</bGenerateTestSet>
   <cTaskDistribution>C</cTaskDistribution>
   <iNumClusters>8</iNumClusters>
   <dRDSClusteredTasksRatio>0.7</dRDSClusteredTasksRatio>
-  <cClusterType>U</cClusterType>
-  <dExpFactor>1</dExpFactor>
+  <cClusterType>G</cClusterType>
+  <dExpFactor>0.1</dExpFactor>
   <bFullResourcesAvailability>false</bFullResourcesAvailability>
   <bResReturnToStart>true</bResReturnToStart>
-  <bAllResourcesHaveSamePos>false</bAllResourcesHaveSamePos>
+  <bAllResourcesHaveSamePos>true</bAllResourcesHaveSamePos>
   <cResourcesStartingPosition>C</cResourcesStartingPosition>
   <dStartingPositionsSpread>2.0</dStartingPositionsSpread>
   <bExtendedTimeWin>false</bExtendedTimeWin>
@@ -51,4 +51,31 @@
   <iTskMinServiceTimeDuration>30</iTskMinServiceTimeDuration>
   <iTskMaxServiceTimeDuration>90</iTskMaxServiceTimeDuration>
   <iTskServiceTimeSpread>30</iTskServiceTimeSpread>
-</objects.BatchConfig>
+  </objects.BatchConfig>
+  <objects.BatchConfig>
+  <nNumInstances>1</nNumInstances>
+  <nResources>100</nResources>
+  <nTasks>1000</nTasks>
+  <maxX>500</maxX>
+  <maxY>500</maxY>
+  <iNumThreads>24</iNumThreads>
+  <bGenerateTestSet>false</bGenerateTestSet>
+  <cTaskDistribution>C</cTaskDistribution>
+  <iNumClusters>8</iNumClusters>
+  <dRDSClusteredTasksRatio>0.7</dRDSClusteredTasksRatio>
+  <cClusterType>G</cClusterType>
+  <dExpFactor>0.5</dExpFactor>
+  <bFullResourcesAvailability>false</bFullResourcesAvailability>
+  <bResReturnToStart>true</bResReturnToStart>
+  <bAllResourcesHaveSamePos>true</bAllResourcesHaveSamePos>
+  <cResourcesStartingPosition>C</cResourcesStartingPosition>
+  <dStartingPositionsSpread>2.0</dStartingPositionsSpread>
+  <bExtendedTimeWin>false</bExtendedTimeWin>
+  <iResMinStartingTime>480</iResMinStartingTime>
+  <iResMinAvailabilityTime>480</iResMinAvailabilityTime>
+  <iTskMinStartingTime>480</iTskMinStartingTime>
+  <iTskMinTimeWindowWidth>240</iTskMinTimeWindowWidth>
+  <iTskMinServiceTimeDuration>30</iTskMinServiceTimeDuration>
+  <iTskMaxServiceTimeDuration>90</iTskMaxServiceTimeDuration>
+  <iTskServiceTimeSpread>30</iTskServiceTimeSpread>
+  </objects.BatchConfig>

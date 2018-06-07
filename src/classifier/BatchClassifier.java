@@ -438,16 +438,16 @@ public class BatchClassifier {
 					tmpPrunCompareStats.setDbTraveledDistance_P(tmpClassStat.getDbTraveledDistance_P());
 
 					tmpPrunCompareStats.setDbAbsExecTimeDiff(tmpClassStat.getDbAbsExecTimeDiff());
-					tmpPrunCompareStats.setDbPerExecTimeDiff(tmpClassStat.getDbPerExecTimeDiff()*100);
+					tmpPrunCompareStats.setDbPerExecTimeDiff(tmpClassStat.getDbPerExecTimeDiff());
 					tmpPrunCompareStats.setDbAbsSrvcdTasksDiff(tmpClassStat.getDbAbsSrvcdTasksDiff());
-					tmpPrunCompareStats.setDbPerSrvcdTasksDiff(tmpClassStat.getDbPerSrvcdTasksDiff()*100);
+					tmpPrunCompareStats.setDbPerSrvcdTasksDiff(tmpClassStat.getDbPerSrvcdTasksDiff());
 					
 					tmpPrunCompareStats.setDbPrecision(tmpClassStat.getDbPrecision());
 					tmpPrunCompareStats.setDbRecall(tmpClassStat.getDbRecall());
 					tmpPrunCompareStats.setDbAbsCorrectlyClassified(tmpClassStat.getDbAbsCorrectlyClassified());
-					tmpPrunCompareStats.setDbPerCorrectlyClassified(tmpClassStat.getDbPerCorrectlyClassified()*100);
+					tmpPrunCompareStats.setDbPerCorrectlyClassified(tmpClassStat.getDbPerCorrectlyClassified());
 					tmpPrunCompareStats.setDbAbsUncorrectlyClassified(tmpClassStat.getDbAbsUncorrectlyClassified());
-					tmpPrunCompareStats.setDbPerUncorrectlyClassified(tmpClassStat.getDbAbsUncorrectlyClassified()*100);
+					tmpPrunCompareStats.setDbPerUncorrectlyClassified(tmpClassStat.getDbAbsUncorrectlyClassified());
 					
 					// *** RANDOM PRUNING ***
 					class sortArray implements Comparator<sortArray> {
