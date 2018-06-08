@@ -1,0 +1,27 @@
+<objects.BatchConfig>
+  <nNumInstances>1</nNumInstances>
+  <nResources>4</nResources>
+  <nTasks>50</nTasks>
+  <maxX>100</maxX>
+  <maxY>100</maxY>
+  <iNumThreads>24</iNumThreads>
+  <bGenerateTestSet>false</bGenerateTestSet>
+  <cTaskDistribution>C</cTaskDistribution>
+  <iNumClusters>8</iNumClusters>
+  <dRDSClusteredTasksRatio>0.7</dRDSClusteredTasksRatio>
+  <cClusterType>G</cClusterType>
+  <dExpFactor>0.01</dExpFactor>
+  <bFullResourcesAvailability>false</bFullResourcesAvailability>
+  <bResReturnToStart>true</bResReturnToStart>
+  <bAllResourcesHaveSamePos>false</bAllResourcesHaveSamePos>
+  <cResourcesStartingPosition>C</cResourcesStartingPosition>
+  <dStartingPositionsSpread>2.0</dStartingPositionsSpread>
+  <bExtendedTimeWin>false</bExtendedTimeWin>
+  <iResMinStartingTime>480</iResMinStartingTime>
+  <iResMinAvailabilityTime>480</iResMinAvailabilityTime>
+  <iTskMinStartingTime>480</iTskMinStartingTime>
+  <iTskMinTimeWindowWidth>240</iTskMinTimeWindowWidth>
+  <iTskMinServiceTimeDuration>30</iTskMinServiceTimeDuration>
+  <iTskMaxServiceTimeDuration>90</iTskMaxServiceTimeDuration>
+  <iTskServiceTimeSpread>30</iTskServiceTimeSpread>
+</objects.BatchConfig>

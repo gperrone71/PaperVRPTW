@@ -26,7 +26,10 @@ public class GenerateDataSet {
 
 	private String strDataSetFileName;
 	private String strDataSetPath;
-	private String strDSFileNamePrefix = "";	
+	private String strDSFileNamePrefix = "";
+	
+	private ArrayList<Task> listTasks ;
+	private ArrayList<Resource> listResources ;
 	
 	/**
 	 * Generates an .xml file containing the world to be simulated using the parameters passed as arguments
@@ -51,8 +54,8 @@ public class GenerateDataSet {
 		int maxY = configParam.getMaxY();
 
 		// generates lists and other variables
-		List<Task> listTasks = new ArrayList<Task>(nTasks);
-		List<Resource> listResources = new ArrayList<Resource>(nRes);
+		listTasks = new ArrayList<Task>(nTasks);
+		listResources = new ArrayList<Resource>(nRes);
 		int numNodes = 0;
 		
 		// instantiate xstream object and set it to absolute references (i.e. do not use references at all)
@@ -259,9 +262,9 @@ public class GenerateDataSet {
 	 * @param configParam	BatchConfig object with the configuration parameters of the batch object being processed
 	 * @return lstTasks	ArrayList of Task objects
 	 */
-	private List<Task> GenerateRandomTasksList(int nTasks, int nStartingNodeID, BatchConfig configParam) {
+	private ArrayList<Task> GenerateRandomTasksList(int nTasks, int nStartingNodeID, BatchConfig configParam) {
 
-		List<Task> listTasks = new ArrayList<Task>(nTasks);
+		ArrayList<Task> listTasks = new ArrayList<Task>(nTasks);
 		
 		PerroUtils.print("++ Generating " + nTasks + " randomly distributed tasks", true);
 		
@@ -336,9 +339,9 @@ public class GenerateDataSet {
 	 * @param resStartingPosition	Node object storing the coordinates of the resources starting position
 	 * @return lstTasks	ArrayList of Task objects
 	 */
-	private List<Task> GenerateClusterTasksList(int nTasks, int nStartingNodeID, BatchConfig configParam, Node resStartingPosition) {
+	private ArrayList<Task> GenerateClusterTasksList(int nTasks, int nStartingNodeID, BatchConfig configParam, Node resStartingPosition) {
 
-		List<Task> listTasks = new ArrayList<Task>(nTasks);
+		ArrayList<Task> listTasks = new ArrayList<Task>(nTasks);
 		int iNumClusters;
 		
 		if (configParam.getiNumClusters() != 0)
@@ -563,6 +566,22 @@ public class GenerateDataSet {
 	 */
 	public String getStrDataSetPath() {
 		return strDataSetPath;
+	}
+
+	public ArrayList<Task> getListTasks() {
+		return listTasks;
+	}
+
+	public void setListTasks(ArrayList<Task> listTasks) {
+		this.listTasks = listTasks;
+	}
+
+	public ArrayList<Resource> getListResources() {
+		return listResources;
+	}
+
+	public void setListResources(ArrayList<Resource> listResources) {
+		this.listResources = listResources;
 	}
 
 }

@@ -8,6 +8,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
@@ -103,7 +104,7 @@ public class DisplayDS extends JComponent {
     }
 
     
-    public void paintComponent(Graphics g) {
+    public void paintComponent(Graphics2D g) {
 /*        g.setColor(Color.white);
         g.fillRect(0, 0, getWidth(), getHeight());
         g.setColor(Color.black);
@@ -125,27 +126,47 @@ public class DisplayDS extends JComponent {
         	minY = (minY >= lon) ? lon : minY;
         }
         
-        double scaleX = 1000/(maxX - minX);
-        double scaleY = 1000/(maxY - minY);
+		Font font1 = new Font("Arial", Font.BOLD, 8);
+		g.setFont(font1);
+		
+        g.drawString("MaxX = " + maxX, 50, 20);
+        g.drawString("MaxY = " + maxY, 50, 30);
+
+        g.setFont(new Font("Arial", Font.BOLD, 12));
+        g.drawString("(0;0)", 50, 950);
+        g.drawString("("+String.format("%.2f", maxX) + ";"+ String.format("%.2f", maxY) + ")", 900, 50);        
+        g.setFont(font1);
+        
+        double scaleX = 800/(maxX - minX);
+        double scaleY = 800/(maxY - minY);
 
         ArrayList<Task> lstNodes_tmp = new ArrayList<Task>();
 
         // create a new list with with all nodes with the scaling factors
         for (Task tsk : lstTasks) {
+           	double lat = tsk.getNode().getLatitude();
+        	double lon = tsk.getNode().getLongitude();
+ 
         	Node nd = new Node();
         	nd = tsk.getNode();
-        	nd.setLatitude((nd.getLatitude() - minX) * scaleX);
+        	
+        	/*
+           	nd.setLatitude((nd.getLatitude() - minX) * scaleX);
 //        	nd.setLongitude( (nd.getLongitude() - minY) * scaleY);
         	nd.setLongitude( (nd.getLongitude() + minY) * scaleY);
         	tsk.setNode(nd);
+        	*/
 
-        	PerroUtils.print("new coord: lat "+ nd.getLatitude() + " lon "+ nd.getLongitude());
+           	nd.setLatitude(	100 + nd.getLatitude()* scaleX);
+        	nd.setLongitude( 900 - (nd.getLongitude()  * scaleY) );
+
+        	PerroUtils.print("old coord: " + lat + "; " + lon + " -> "+ nd.getLatitude() + "; "+ nd.getLongitude());
 
         	lstNodes_tmp.add(tsk);       	
         }
         
         PerroUtils.print("---");
-        	
+        
         // drawing nodes first
         for (Task tsk : lstNodes_tmp) {
         	int lat = 0;
@@ -188,12 +209,12 @@ public class DisplayDS extends JComponent {
 		// TODO Auto-generated method stub
 
     	// finally I can load the xml file and populate the lists
-		Solver1 problemSolver = new Solver1("output/Florence_10_500/", "Florence_10_500_0.xml");
+		Solver1 problemSolver = new Solver1("output/C_Batch1_10/", "CG8_10_1_0.xml");
 		DisplayDS tmpDS = new DisplayDS(1000,1000);
 		tmpDS.setLstTasks((ArrayList<Task>) problemSolver.getLstTasks());
 		
 		BufferedImage bi = new BufferedImage(1000, 1000, BufferedImage.TYPE_INT_RGB);
-		Graphics g = bi.createGraphics();
+		Graphics2D g = bi.createGraphics();
 		
 		Font font = new Font("Arial", Font.BOLD, 20);
 	      g.setFont(font);
@@ -206,9 +227,10 @@ public class DisplayDS extends JComponent {
 	      g.fillRect(0, 0, bi.getWidth(), bi.getHeight());
 	      g.setColor(Color.black);
 
-	      g.drawString(message, (200- stringWidth) / 2, 200/ 2 + stringHeight / 4);
+	      g.drawString(message, (1000- stringWidth) / 2, 100 / 2 + stringHeight / 4);
 
-		g.drawRect(800, 800, 100, 100);
+	    // draw axes
+		g.drawRect(100, 100, 800, 800);
 
 		Font font1 = new Font("Arial", Font.BOLD, 8);
 		g.setFont(font1);
@@ -218,8 +240,8 @@ public class DisplayDS extends JComponent {
 		
 		
 		try {
-			ImageIO.write(bi, "PNG", new File("C:\\Users\\gperr\\eclipse-workspace\\Data_Mining_180105\\Data_Mining\\pippo.png"));
-			ImageIO.write(bi, "JPG", new File("C:\\Users\\gperr\\eclipse-workspace\\Data_Mining_180105\\Data_Mining\\pippo.jpg"));
+			ImageIO.write(bi, "PNG", new File("C:\\Users\\giovanni_perrone.COMMPROVE\\Documents\\Paper\\PaperVRPTW\\output\\C_Batch1_10\\pippo.png"));
+			ImageIO.write(bi, "JPG", new File("C:\\Users\\giovanni_perrone.COMMPROVE\\Documents\\Paper\\PaperVRPTW\\output\\C_Batch1_10\\pippo.jpg"));
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

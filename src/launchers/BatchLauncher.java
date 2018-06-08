@@ -146,6 +146,15 @@ public class BatchLauncher {
 				GenerateDataSet dsGenerator = new GenerateDataSet();		
 				dsGenerator.GenerateDS(strFullPath, "_" + iInstancesCounter , batchObj);
 				
+				// generation of a plot using DSPlotter
+				DSPlotter dsPlot = new DSPlotter(1000, 1000, dsGenerator.getStrDataSetFileName());
+				dsPlot.setConfigItem(batchObj);
+				dsPlot.setStrSubTitle("Test");
+				dsPlot.setLstTasks(dsGenerator.getListTasks());
+				dsPlot.setLstResources(dsGenerator.getListResources());
+				dsPlot.plot();
+
+
 				// then, let's apply a solver to it
 				Solver1 problemSolver = new Solver1(dsGenerator.getStrDataSetPath(), dsGenerator.getStrDataSetFileName());
 				

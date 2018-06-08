@@ -10,7 +10,7 @@
   <iNumClusters>8</iNumClusters>
   <dRDSClusteredTasksRatio>0.7</dRDSClusteredTasksRatio>
   <cClusterType>G</cClusterType>
-  <dExpFactor>1</dExpFactor>
+  <dExpFactor>0.01</dExpFactor>
   <bFullResourcesAvailability>false</bFullResourcesAvailability>
   <bResReturnToStart>true</bResReturnToStart>
   <bAllResourcesHaveSamePos>false</bAllResourcesHaveSamePos>
@@ -37,7 +37,7 @@
   <iNumClusters>8</iNumClusters>
   <dRDSClusteredTasksRatio>0.7</dRDSClusteredTasksRatio>
   <cClusterType>U</cClusterType>
-  <dExpFactor>1</dExpFactor>
+  <dExpFactor>0.02</dExpFactor>
   <bFullResourcesAvailability>false</bFullResourcesAvailability>
   <bResReturnToStart>true</bResReturnToStart>
   <bAllResourcesHaveSamePos>false</bAllResourcesHaveSamePos>
