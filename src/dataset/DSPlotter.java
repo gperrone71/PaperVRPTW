@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -47,11 +48,12 @@ public class DSPlotter {
 	// constant values
 	private final float colorInc = 0.07f;			// steps of increment for the cluster legend
 	private final float colorStart = 0.13f;			// starting value for the color for clusters and clusters legend
-	private final int upperBorder = 120;			// height of the upper border of the chart area
-	private final int lowerBorder = 70;				// height of the lower border
-	private final int leftBorder = 30;
-	private final int rightBorder = 30;
+	private final int upperChartBorder = 120;			// height of the upper border of the chart area
+	private final int lowerChartBorder = 70;				// height of the lower border
+	private final int leftChartBorder = 30;
+	private final int rightChartBorder = 30;
 	private final int borderSize = 20;				// size of the space between axis and the grey boxes
+	private final int numberOfTicks = 10;			// number of marker ticks for the two axis 
 
 	// private data members used for configuration
 	private int iWidth;
@@ -128,9 +130,8 @@ public class DSPlotter {
 		}
 		
 		// calculates the scaling factors
-		// 100 and 150 are fixed numbers (50 pixels of border on X, 100 on top part of Y and 50 on lower side)
-        scaleX = (iWidth - (leftBorder + rightBorder))/(maxX - minX);
-        scaleY = (iHeight - (upperBorder))/(maxY - minY);
+        scaleX = (iWidth - (leftChartBorder + rightChartBorder))/(maxX - minX);
+        scaleY = (iHeight - (upperChartBorder + lowerChartBorder))/(maxY - minY);
 
         // starts drawing
 		Font font1 = new Font("Arial", Font.BOLD, 8);
@@ -209,7 +210,7 @@ public class DSPlotter {
             				clusterCenterLon - iRadiusLon - 3,
     	        			2 * iRadiusLat,
     	        			2 * iRadiusLon);
-            		PerroUtils.print("C: " + clusterCenterLat + ";" + clusterCenterLon + " - R = "+ cluster.getiClusterRadius() + " -> " + iRadiusLat + ";" + iRadiusLon);
+//            		PerroUtils.print("C: " + clusterCenterLat + ";" + clusterCenterLon + " - R = "+ cluster.getiClusterRadius() + " -> " + iRadiusLat + ";" + iRadiusLon);
             	}
             	         	
             	iTotClusteredTasks += cluster.getLstTasksInCluster().size();
@@ -239,28 +240,47 @@ public class DSPlotter {
         
         // fill borders
         g.setColor(Color.gray);
-        // draw 4 boxes to fill the borders leaving a 10 pixels border to be able to see points drawn on the axes       
+        // draw 4 boxes to fill the borders leaving a border to be able to see points drawn on the axes       
         // lower part
-	    g.fillRect(0, iHeight - (lowerBorder - borderSize), iWidth, iHeight);
+	    g.fillRect(0, iHeight - (lowerChartBorder - borderSize), iWidth, iHeight);
 	    // upper part
-	    g.fillRect(0, 0, iWidth, (upperBorder - borderSize));
+	    g.fillRect(0, 0, iWidth, (upperChartBorder - borderSize));
 	    // left
-	    g.fillRect(0,  0,  (leftBorder - borderSize), iHeight);
+	    g.fillRect(0,  0,  (leftChartBorder - borderSize), iHeight);
 	    // right
-	    g.fillRect(iWidth - (rightBorder - borderSize) , 0, iWidth, iHeight);
+	    g.fillRect(iWidth - (rightChartBorder - borderSize) , 0, iWidth, iHeight);
 	    
 	    // draw axes
 	    g.setColor(Color.black);
-	    g.drawRect(leftBorder, upperBorder, iWidth-(leftBorder + rightBorder), iHeight-(upperBorder + lowerBorder));
+	    g.drawRect(leftChartBorder, upperChartBorder, iWidth-(leftChartBorder + rightChartBorder), iHeight-(upperChartBorder + lowerChartBorder));
+	    
+	    // draw axis ticks
+	    if (bShowAxisTicks) {
+	    	g.setFont(new Font("Arial", Font.PLAIN, 10));
 
-	    // plots origin and border coordinates
-	    FontMetrics fontMetrics = g.getFontMetrics();
-	    g.setFont(new Font("Arial", Font.BOLD, 12));
-	    g.drawString("(0;0)", (leftBorder - 20), iHeight - lowerBorder + 20);		//  position of the origin is fixed
-	    String strTmp = "("+String.format("%.1f", maxX) + ";"+ String.format("%.1f", maxY) + ")";
-	    int stringWidth = fontMetrics.stringWidth(strTitle);
-	    int stringHeight = fontMetrics.getAscent();    
-	    g.drawString(strTmp, iWidth-stringWidth/2-50, upperBorder - 20);        
+	    	int step = (int) ( (iWidth-(leftChartBorder + rightChartBorder)) / numberOfTicks );
+	    	for (int i = 0 ; i <= numberOfTicks; i++) {
+	    		int lat = leftChartBorder + i*step;
+	    		int lon = iHeight - lowerChartBorder;
+	    		g.drawRect(lat, lon, 1, 5);
+	    		drawCenteredString(String.format("%.1f", (maxX / numberOfTicks) * i), lat, lon + 20);
+	    	}
+
+	    	AffineTransform fontTransform = new AffineTransform();
+    		fontTransform.rotate(Math.toRadians(90));
+    		Font rotatedFont = g.getFont().deriveFont(fontTransform);    		
+    		g.setFont(rotatedFont);
+
+	    	step = (int) ( (iHeight-(upperChartBorder + lowerChartBorder)) / numberOfTicks );    	
+	    	for (int i = 0; i <= numberOfTicks; i++) {
+	    		int lat = leftChartBorder;
+	    		int lon = iHeight - lowerChartBorder - i*step;
+	    		g.drawRect(lat-5, lon, 5, 1);
+	    		String str = String.format("%.1f", (maxX / numberOfTicks) * i);
+
+	    		g.drawString(str,  lat - 13, lon - 10 );		// since the font is rotated cannot use the drawCenteredString method
+	    	}
+	    }
 
 	    // draws Title and subTitle
 	    g.setFont(new Font("Arial", Font.BOLD, 20));
@@ -292,10 +312,10 @@ public class DSPlotter {
         	Color curColor = g.getColor();
             float hue = colorStart;
             
-            int iClusterLegendLongitude = iHeight - lowerBorder + borderSize + 5;		// starting Y coordinate for legend and for legend box
+            int iClusterLegendLongitude = iHeight - lowerChartBorder + borderSize + 5;		// starting Y coordinate for legend and for legend box
 
             g.setColor(Color.white);
-    	    g.fillRect(leftBorder + 50, iClusterLegendLongitude, iWidth - (leftBorder + rightBorder + 100), 31);
+    	    g.fillRect(leftChartBorder + 50, iClusterLegendLongitude, iWidth - (leftChartBorder + rightChartBorder + 100), 31);
     	    g.setColor(Color.black);    
 
         	for (ClusteredTasks cluster : lstClusteredTasks) {
@@ -309,7 +329,7 @@ public class DSPlotter {
         				hue = colorStart;
         			g.setColor(tmpCol);
         		}
-       			g.drawString("Cluster " + clusterIndex, (leftBorder + 55) + ( (int) (clusterIndex / 3) ) * 55, iClusterLegendLongitude + 8 + (clusterIndex % 3) * 10);
+       			g.drawString("Cluster " + clusterIndex, (leftChartBorder + 55) + ( (int) (clusterIndex / 3) ) * 55, iClusterLegendLongitude + 8 + (clusterIndex % 3) * 10);
         	}
         	g.setColor(curColor);
         }
@@ -336,7 +356,7 @@ public class DSPlotter {
 	 * assumes scaleX is already calculated
 	 */
 	private int getScaledLat(double lat) {
-		return (int) (leftBorder + lat * scaleX);
+		return (int) (leftChartBorder + lat * scaleX);
 	}
 
 	/*
@@ -345,7 +365,7 @@ public class DSPlotter {
 	 */
 	private int getScaledLon(double lon) {
 //		return (int) ( (iHeight - 50) - (lon * scaleY));
-		return (int) ( (iHeight - lowerBorder ) - (lon * scaleY));
+		return (int) ( (iHeight - lowerChartBorder ) - (lon * scaleY));
 	}
 
 	/**
@@ -519,6 +539,14 @@ public class DSPlotter {
 
 	public void setStrPath(String strPath) {
 		this.strPath = strPath;
+	}
+
+	public boolean isbShowAxisTicks() {
+		return bShowAxisTicks;
+	}
+
+	public void setbShowAxisTicks(boolean bShowAxisTicks) {
+		this.bShowAxisTicks = bShowAxisTicks;
 	}
 
 }
