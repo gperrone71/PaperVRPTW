@@ -157,7 +157,7 @@ public class BatchLauncher {
 				dsPlot.setStrPath(dsGenerator.getStrDataSetPath());
 				dsPlot.plot();
 				
-/*				// then, let's apply a solver to it
+				// then, let's apply a solver to it
 				Solver1 problemSolver = new Solver1(dsGenerator.getStrDataSetPath(), dsGenerator.getStrDataSetFileName());
 				
 				// generate a temp SolStats object
@@ -181,7 +181,6 @@ public class BatchLauncher {
 				problemSolver.generateARFF(strFullPath, false, false);		// generate in any case the full arff file (including class labels)
 				if (batchObj.isbGenerateTestSet())				// if a test set (without labels) has to be generated then do so 
 					problemSolver.generateARFF(strFullPath, false, true);
-	*/
 				
 				iInstancesCounter++;
 			}

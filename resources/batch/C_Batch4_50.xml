@@ -1,7 +1,7 @@
 <objects.BatchConfig>
   <nNumInstances>5</nNumInstances>
-  <nResources>4</nResources>
-  <nTasks>150</nTasks>
+  <nResources>8</nResources>
+  <nTasks>200</nTasks>
   <maxX>500</maxX>
   <maxY>500</maxY>
   <iNumThreads>24</iNumThreads>
@@ -10,7 +10,7 @@
   <iNumClusters>8</iNumClusters>
   <dRDSClusteredTasksRatio>0.7</dRDSClusteredTasksRatio>
   <cClusterType>G</cClusterType>
-  <dExpFactor>0.05</dExpFactor>
+  <dExpFactor>0.02</dExpFactor>
   <bFullResourcesAvailability>false</bFullResourcesAvailability>
   <bResReturnToStart>true</bResReturnToStart>
   <bAllResourcesHaveSamePos>false</bAllResourcesHaveSamePos>

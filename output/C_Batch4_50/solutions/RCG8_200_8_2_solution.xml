@@ -1,0 +1,20 @@
+<objects.SolStats>
+  <numResources>8</numResources>
+  <numTasks>200</numTasks>
+  <dbMaxX>0.0</dbMaxX>
+  <dbMaxY>0.0</dbMaxY>
+  <dbTasksDensity>0.0</dbTasksDensity>
+  <numSolutionsFound>2</numSolutionsFound>
+  <dblExecutionTime>12.147</dblExecutionTime>
+  <iNumThreads>24</iNumThreads>
+  <iTotServiced>38</iTotServiced>
+  <iTotUnserviced>162</iTotUnserviced>
+  <dbTraveledDistance>1760.686044086279</dbTraveledDistance>
+  <dbTotalCosts>30283.799958284</dbTotalCosts>
+  <dbTimeWinViolation>0.0</dbTimeWinViolation>
+  <iNumVehiclesUsed>8</iNumVehiclesUsed>
+  <dbOperationTime>4163.491306965966</dbOperationTime>
+  <dbTransportTime>1760.6860440862788</dbTransportTime>
+  <dbServiceTime>2318.0</dbServiceTime>
+  <dbWaitingTime>84.80526287968678</dbWaitingTime>
+</objects.SolStats>

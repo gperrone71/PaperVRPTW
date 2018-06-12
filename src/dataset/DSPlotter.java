@@ -15,6 +15,8 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
+import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
+
 import objects.*;
 import utils.PerroUtils;
 
@@ -63,6 +65,7 @@ public class DSPlotter {
 	private ArrayList<Task> lstRandomTasks = new ArrayList<Task>();								// list holding the tasks not generated in clusters
 	private ArrayList<Resource> lstResources = new ArrayList<Resource>();						// list holding the resources
 	private ArrayList<ClusteredTasks> lstClusteredTasks = new ArrayList<ClusteredTasks>();		// list holding the tasks generated in clusters
+	private VehicleRoutingProblemSolution solution;												// problem solution to be possibly plotted
 	private BatchConfig configItem = new BatchConfig();											// object possibly holding the config parameters used to generate the ds
 	private String strFileName;																	// String holding the name of the ds being plotted
 	private String strPath;																		// String holding the path of the ds being plotted
@@ -547,6 +550,14 @@ public class DSPlotter {
 
 	public void setbShowAxisTicks(boolean bShowAxisTicks) {
 		this.bShowAxisTicks = bShowAxisTicks;
+	}
+
+	public VehicleRoutingProblemSolution getSolution() {
+		return solution;
+	}
+
+	public void setSolution(VehicleRoutingProblemSolution solution) {
+		this.solution = solution;
 	}
 
 }
