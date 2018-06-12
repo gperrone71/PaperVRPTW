@@ -150,12 +150,14 @@ public class BatchLauncher {
 				DSPlotter dsPlot = new DSPlotter(1000, 1000, dsGenerator.getStrDataSetFileName());
 				dsPlot.setConfigItem(batchObj);
 				dsPlot.setStrSubTitle("Test");
-				dsPlot.setLstTasks(dsGenerator.getListTasks());
+				dsPlot.setLstRandomTasks(dsGenerator.getLstRandomTasks());
+				dsPlot.setLstClusteredTasks(dsGenerator.getLstClusteredTasks());
 				dsPlot.setLstResources(dsGenerator.getListResources());
+				dsPlot.setStrFileName(dsGenerator.getStrDataSetFileName());
+				dsPlot.setStrPath(dsGenerator.getStrDataSetPath());
 				dsPlot.plot();
-
-
-				// then, let's apply a solver to it
+				
+/*				// then, let's apply a solver to it
 				Solver1 problemSolver = new Solver1(dsGenerator.getStrDataSetPath(), dsGenerator.getStrDataSetFileName());
 				
 				// generate a temp SolStats object
@@ -179,6 +181,7 @@ public class BatchLauncher {
 				problemSolver.generateARFF(strFullPath, false, false);		// generate in any case the full arff file (including class labels)
 				if (batchObj.isbGenerateTestSet())				// if a test set (without labels) has to be generated then do so 
 					problemSolver.generateARFF(strFullPath, false, true);
+	*/
 				
 				iInstancesCounter++;
 			}
