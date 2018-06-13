@@ -268,7 +268,7 @@ public class Solver1 {
 
         // and search a solution
         Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
-
+               
         // update the execution time and the number of executions in the solution stats object
         double dbExecTimeInSec = (System.currentTimeMillis() - startTime) / 1000; 
         solStats.setDblExecutionTime( dbExecTimeInSec );

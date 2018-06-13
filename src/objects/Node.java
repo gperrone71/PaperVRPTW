@@ -22,6 +22,16 @@ public class Node {
 	private double latitude;
 	private double longitude;
 	
+	// constructor
+	public Node (double lat, double lon) {
+		this.latitude = lat;
+		this.longitude = lon;
+	}
+	
+	public Node() {
+		// TODO Auto-generated constructor stub
+	}
+
 	/**
 	 * overrides normal method toString and generate a readable string
 	 * 

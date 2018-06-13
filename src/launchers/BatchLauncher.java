@@ -155,6 +155,7 @@ public class BatchLauncher {
 				dsPlot.setLstResources(dsGenerator.getListResources());
 				dsPlot.setStrFileName(dsGenerator.getStrDataSetFileName());
 				dsPlot.setStrPath(dsGenerator.getStrDataSetPath());
+				dsPlot.setStrSubFolder("initial");
 				dsPlot.plot();
 				
 				// then, let's apply a solver to it
@@ -167,8 +168,9 @@ public class BatchLauncher {
 				tmp = problemSolver.launchSolver(false, true, batchObj.isbResReturnToStart(), batchObj.getiNumThreads(), strFullPath);
 				
 				// plots another plot w/ solution this time
+				dsPlot.setSolution(problemSolver.getSolFound());
 				dsPlot.setSolutionStats(tmp);
-				dsPlot.setStrFileName(dsGenerator.getStrDataSetFileName() + "_solved");
+				dsPlot.setStrFileName(PerroUtils.returnFullFileNameWOExtension(dsGenerator.getStrDataSetFileName()) + "_00(UP)");
 				dsPlot.setStrSubTitle("Solved datasource");
 				dsPlot.plot();			
 				

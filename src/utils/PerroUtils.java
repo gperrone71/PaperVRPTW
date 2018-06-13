@@ -75,6 +75,8 @@ public class PerroUtils {
 				PerroUtils.print(strFullPath + " created ok", true);
 				return true;
 			}
+			else
+				PerroUtils.print("ERROR in folder creation!", true);
 		} else 
 			// directory exists : wipe all contents if flag if true
 			try {
@@ -112,7 +114,10 @@ public class PerroUtils {
 		 * @return String string without extension
 		 */
 		public static String returnFullFileNameWOExtension (String str) {
-			return str.substring(0, str.indexOf('.'));
+			if (str.indexOf('.') != -1)
+				return str.substring(0, str.indexOf('.'));
+			else
+				return str;
 		}
 
 /** 

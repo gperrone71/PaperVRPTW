@@ -24,6 +24,7 @@ import org.apache.commons.io.FileUtils;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.security.NoTypePermission;
 
+import dataset.DSPlotter;
 import dataset.GenerateDataSet;
 import launchers.BatchLauncher;
 import objects.*;
@@ -317,6 +318,18 @@ public class BatchClassifier {
 					// for the original problem I want the results to be stored on disk
 				    SolStats tmpSolStat = new SolStats();		    
 				    tmpSolStat = problemSolver.launchSolver(false, true, bTestSetResourcesReturnToOrigin, 24, strPathTmp);
+				    
+					// generation of a plot using DSPlotter
+					DSPlotter dsPlot = new DSPlotter(1000, 1000, strXMLFileName);
+					dsPlot.setStrSubTitle("Unpruned datasource");
+					dsPlot.setLstRandomTasks((ArrayList<Task>) lstTasks);
+					dsPlot.setLstResources((ArrayList<Resource>) lstResources);
+					dsPlot.setStrFileName(PerroUtils.returnFullFileNameWOExtension(strXMLFileName) + "_00(UP)");
+					dsPlot.setSolutionStats(tmpSolStat);
+					dsPlot.setSolution(problemSolver.getSolFound());
+					dsPlot.setStrPath(strPathTmp);
+					dsPlot.setStrSubFolder("pruning_loop");
+					dsPlot.plot();
 
 				    // calculates maxX and maxY and density
 				    problemSolver.calcMaxAndDensity();
@@ -358,6 +371,18 @@ public class BatchClassifier {
 					
 					// launch the solver on the pruned problem with 24 threads and stores the results w/o storing solution results
 				    tmpSolStat = prunedProblemSolver.launchSolver(false, false, bTestSetResourcesReturnToOrigin, 24, strPathTmp);
+				    
+				    // create another plot for pruned ds
+				    dsPlot.clear();
+					dsPlot.setStrSubTitle("PRUNED w/ CLASSIFIER");
+					dsPlot.setLstRandomTasks((ArrayList<Task>) lstPrunedTasks);
+					dsPlot.setLstResources((ArrayList<Resource>) lstResources);
+					dsPlot.setStrFileName(PerroUtils.returnFullFileNameWOExtension(strXMLFileName) + "_01(PR)");
+					dsPlot.setSolutionStats(tmpSolStat);
+					dsPlot.setSolution(prunedProblemSolver.getSolFound());
+					dsPlot.setStrPath(strPathTmp);
+					dsPlot.setStrSubFolder("pruning_loop");
+					dsPlot.plot();
 	
 				    // and copies the relevant information in the ClassifierStats object in the section for the pruned dataset
 					tmpClassStat.setNumTasks_P(lstPrunedTasks.size());
@@ -506,6 +531,18 @@ public class BatchClassifier {
 					// launch the solver on the pruned problem with 7 threads and stores the results w/o storing solution results
 				    tmpSolStat = RNDPrunedProblemSolver.launchSolver(false, false, bTestSetResourcesReturnToOrigin, 24, strPathTmp);
 
+				    // create another plot for pruned ds
+				    dsPlot.clear();
+					dsPlot.setStrSubTitle("RANDOM PRUNING 1");
+					dsPlot.setLstRandomTasks((ArrayList<Task>) lstPrRndTasks);
+					dsPlot.setLstResources((ArrayList<Resource>) lstResources);
+					dsPlot.setStrFileName(PerroUtils.returnFullFileNameWOExtension(strXMLFileName) + "_02(PR1)");
+					dsPlot.setSolutionStats(tmpSolStat);
+					dsPlot.setSolution(RNDPrunedProblemSolver.getSolFound());
+					dsPlot.setStrPath(strPathTmp);
+					dsPlot.setStrSubFolder("pruning_loop");
+					dsPlot.plot();
+					
 				    // and add the information on the execution to the stats object
 				    // and copies the relevant information in the ClassifierStats object in the section for the pruned dataset
 				    tmpPrunCompareStats.setNumTasks_PR1(lstPrunedTasks.size());
@@ -564,6 +601,18 @@ public class BatchClassifier {
 					
 					// launch the solver on the pruned problem with 7 threads and stores the results w/o storing solution results
 				    tmpSolStat = RND2PrunedProblemSolver.launchSolver(false, false, bTestSetResourcesReturnToOrigin, 24, strPathTmp);
+
+				    // create another plot for pruned ds
+				    dsPlot.clear();
+					dsPlot.setStrSubTitle("RANDOM PRUNING 2");
+					dsPlot.setLstRandomTasks((ArrayList<Task>) lstPrRnd2Tasks);
+					dsPlot.setLstResources((ArrayList<Resource>) lstResources);
+					dsPlot.setStrFileName(PerroUtils.returnFullFileNameWOExtension(strXMLFileName) + "_03(PR2)");
+					dsPlot.setSolutionStats(tmpSolStat);
+					dsPlot.setSolution(RND2PrunedProblemSolver.getSolFound());
+					dsPlot.setStrPath(strPathTmp);
+					dsPlot.setStrSubFolder("pruning_loop");
+					dsPlot.plot();
 
 				    // and add the information on the execution to the stats object
 				    // and copies the relevant information in the ClassifierStats object in the section for the pruned dataset
