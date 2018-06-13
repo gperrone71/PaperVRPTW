@@ -149,7 +149,7 @@ public class BatchLauncher {
 				// generation of a plot using DSPlotter
 				DSPlotter dsPlot = new DSPlotter(1000, 1000, dsGenerator.getStrDataSetFileName());
 				dsPlot.setConfigItem(batchObj);
-				dsPlot.setStrSubTitle("Test");
+				dsPlot.setStrSubTitle("Unsolved datasource");
 				dsPlot.setLstRandomTasks(dsGenerator.getLstRandomTasks());
 				dsPlot.setLstClusteredTasks(dsGenerator.getLstClusteredTasks());
 				dsPlot.setLstResources(dsGenerator.getListResources());
@@ -165,6 +165,12 @@ public class BatchLauncher {
 				
 				// launch the solver and stores the results setting also the store results to disk flag
 				tmp = problemSolver.launchSolver(false, true, batchObj.isbResReturnToStart(), batchObj.getiNumThreads(), strFullPath);
+				
+				// plots another plot w/ solution this time
+				dsPlot.setSolutionStats(tmp);
+				dsPlot.setStrFileName(dsGenerator.getStrDataSetFileName() + "_solved");
+				dsPlot.setStrSubTitle("Solved datasource");
+				dsPlot.plot();			
 				
 				// sets the other variables
 				tmp.setDbMaxX(batchObj.getMaxX());

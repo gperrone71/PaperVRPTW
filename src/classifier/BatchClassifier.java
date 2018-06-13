@@ -413,6 +413,7 @@ public class BatchClassifier {
 					tmpPrunCompareStats.setStrTimeStampDay(tmpClassStat.getStrTimeStampDay());
 					tmpPrunCompareStats.setStrInstanceName(tmpClassStat.getStrInstanceName());
 					tmpPrunCompareStats.setStrHash(tmpClassStat.getStrHash());
+					tmpPrunCompareStats.setNumClusters(Integer.parseInt(strDSFileNamePrefix.replaceAll("[^0-9]", "")));
 					tmpPrunCompareStats.setNumResources(tmpClassStat.getNumResources());
 					tmpPrunCompareStats.setDbMaxX(tmpClassStat.getDbMaxX());
 					tmpPrunCompareStats.setDbMaxY(tmpClassStat.getDbMaxY());

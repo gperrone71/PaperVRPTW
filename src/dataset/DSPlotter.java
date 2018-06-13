@@ -50,7 +50,7 @@ public class DSPlotter {
 	// constant values
 	private final float colorInc = 0.07f;			// steps of increment for the cluster legend
 	private final float colorStart = 0.13f;			// starting value for the color for clusters and clusters legend
-	private final int upperChartBorder = 120;			// height of the upper border of the chart area
+	private final int upperChartBorder = 130;			// height of the upper border of the chart area
 	private final int lowerChartBorder = 70;				// height of the lower border
 	private final int leftChartBorder = 30;
 	private final int rightChartBorder = 30;
@@ -67,6 +67,7 @@ public class DSPlotter {
 	private ArrayList<ClusteredTasks> lstClusteredTasks = new ArrayList<ClusteredTasks>();		// list holding the tasks generated in clusters
 	private VehicleRoutingProblemSolution solution;												// problem solution to be possibly plotted
 	private BatchConfig configItem = new BatchConfig();											// object possibly holding the config parameters used to generate the ds
+	private SolStats solutionStats;																// optional object storing results of solution
 	private String strFileName;																	// String holding the name of the ds being plotted
 	private String strPath;																		// String holding the path of the ds being plotted
 	
@@ -298,7 +299,7 @@ public class DSPlotter {
 	    g.setColor(Color.white);
 	    g.fillRect(10, 10, 200, 75);
 	    g.setColor(Color.black);    
-	    g.setFont(new Font("Courier", Font.BOLD, 9));
+	    g.setFont(new Font("Courier", Font.PLAIN, 9));
         g.drawString("MaxX      = " + String.format("%.1f", maxX), 20, 20);
         g.drawString("MaxY      = " + String.format("%.1f", maxY), 20, 30);
         g.drawString("#Res      = " + lstResources.size(), 20, 40);
@@ -306,6 +307,26 @@ public class DSPlotter {
         g.drawString("#Clusters = " + configItem.getiNumClusters(), 20, 60);
         g.drawString("#CluTasks = " + iTotClusteredTasks, 20, 70);
         g.drawString("Spread f  = " + configItem.getdExpFactor(), 20, 80);
+        
+        // plot information regarding the solution (if available)
+        if (solutionStats != null) {
+        	int startLat = iWidth - 210;
+    	    g.setColor(Color.white);
+    	    g.fillRect(startLat, 10, 200, 85);		// box has same size of the configItem box but displayed on the right
+    	    startLat += 10;
+    	    g.setColor(Color.black);    
+    	    g.setFont(new Font("Courier", Font.PLAIN, 9));
+            g.drawString("Serviced tasks  = " + solutionStats.getiTotServiced(), startLat, 20);
+            g.drawString("Unsrvcd tasks   = " + solutionStats.getiTotUnserviced(), startLat, 30);
+            g.drawString("Time violations = " + String.format("%.1f", solutionStats.getDbTimeWinViolation()), startLat, 40);
+            g.drawString("#Vehicles used  = " + solutionStats.getiNumVehiclesUsed(), startLat, 50);
+            g.drawString("Execution time  = " + String.format("%.1f", solutionStats.getDblExecutionTime()), startLat, 60);
+
+            g.drawString("Total costs     = " + String.format("%.1f", solutionStats.getDbTotalCosts()), startLat, 70);
+            g.drawString("Traveled dist   = " + String.format("%.1f", solutionStats.getDbTraveledDistance()), startLat, 80);
+            g.drawString("Operation time  = " + String.format("%.1f", solutionStats.getDbOperationTime()), startLat, 90);
+        }
+        	
         
         // if I have clustered tasks then write the legend
         // REM: I have to paint the legend here because AFTER I have created the chart I draw the grey boxes at the borders
@@ -558,6 +579,14 @@ public class DSPlotter {
 
 	public void setSolution(VehicleRoutingProblemSolution solution) {
 		this.solution = solution;
+	}
+
+	public SolStats getSolutionStats() {
+		return solutionStats;
+	}
+
+	public void setSolutionStats(SolStats solutionStats) {
+		this.solutionStats = solutionStats;
 	}
 
 }

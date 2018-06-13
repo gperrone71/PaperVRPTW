@@ -22,6 +22,7 @@ public class PruningCompareStats {
 	// Information describing the instance
 	private String strInstanceName;		// "name" of the instance, i.e. its file name
 	private String strHash;				// hash code for the instance
+	private int numClusters;			// number of clusters in the ds
 	private int numResources;			// number of resources in this execution
 	private double dbMaxX;				// maximum value for X
 	private double dbMaxY;				// maximum value for Y
@@ -650,6 +651,14 @@ public class PruningCompareStats {
 
 	public void setDbPerUncorrectlyClassified(double dbPerUncorrectlyClassified) {
 		this.dbPerUncorrectlyClassified = dbPerUncorrectlyClassified;
+	}
+
+	public int getNumClusters() {
+		return numClusters;
+	}
+
+	public void setNumClusters(int numClusters) {
+		this.numClusters = numClusters;
 	}
 
 
