@@ -82,7 +82,7 @@ public class BatchClassifier {
 		xstream.allowTypeHierarchy(BatchConfig.class);
 
 		// all lines from files are read and put in an arraylist
-		lstString = PerroUtils.getFileToList("resources/" + strConfigFileName);
+		lstString = PerroUtils.getFileToList(FolderDefs.resourcesFolderName + strConfigFileName);
 		// exit if something went wrong
 		if (lstString == null)
 			return false;
@@ -288,7 +288,7 @@ public class BatchClassifier {
 					// First check if the folder exists or not and if folder prep operation successful writes relevant stats
 					if (PerroUtils.prepareFolder(strPathTmp + "model/", false)) {
 						Charset chEnc = Charset.forName("utf-8");
-						File tmpFile = new File(strPathTmp + "model/" + "model_stats_" + strDSFileNameSuffix + ".txt");
+						File tmpFile = new File(strPathTmp + FolderDefs.modelFolderName + "model_stats_" + strDSFileNameSuffix + ".txt");
 						FileUtils.writeStringToFile(tmpFile, eval.toSummaryString(), chEnc);
 						FileUtils.writeStringToFile(tmpFile, eval.toClassDetailsString("\nClass Details\n"), chEnc, true);
 					}
@@ -328,7 +328,7 @@ public class BatchClassifier {
 					dsPlot.setSolutionStats(tmpSolStat);
 					dsPlot.setSolution(problemSolver.getSolFound());
 					dsPlot.setStrPath(strPathTmp);
-					dsPlot.setStrSubFolder("pruning_loop");
+					dsPlot.setStrSubFolder(FolderDefs.dsPlotPrunedPlotsFolderName);
 					dsPlot.plot();
 
 				    // calculates maxX and maxY and density
@@ -381,7 +381,7 @@ public class BatchClassifier {
 					dsPlot.setSolutionStats(tmpSolStat);
 					dsPlot.setSolution(prunedProblemSolver.getSolFound());
 					dsPlot.setStrPath(strPathTmp);
-					dsPlot.setStrSubFolder("pruning_loop");
+					dsPlot.setStrSubFolder(FolderDefs.dsPlotPrunedPlotsFolderName);
 					dsPlot.plot();
 	
 				    // and copies the relevant information in the ClassifierStats object in the section for the pruned dataset
@@ -548,7 +548,7 @@ public class BatchClassifier {
 					dsPlot.setSolutionStats(tmpSolStat);
 					dsPlot.setSolution(RNDPrunedProblemSolver.getSolFound());
 					dsPlot.setStrPath(strPathTmp);
-					dsPlot.setStrSubFolder("pruning_loop");
+					dsPlot.setStrSubFolder(FolderDefs.dsPlotPrunedPlotsFolderName);
 					dsPlot.plot();
 					
 				    // and add the information on the execution to the stats object
@@ -619,7 +619,7 @@ public class BatchClassifier {
 					dsPlot.setSolutionStats(tmpSolStat);
 					dsPlot.setSolution(RND2PrunedProblemSolver.getSolFound());
 					dsPlot.setStrPath(strPathTmp);
-					dsPlot.setStrSubFolder("pruning_loop");
+					dsPlot.setStrSubFolder(FolderDefs.dsPlotPrunedPlotsFolderName);
 					dsPlot.plot();
 
 				    // and add the information on the execution to the stats object

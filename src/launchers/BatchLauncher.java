@@ -155,7 +155,7 @@ public class BatchLauncher {
 				dsPlot.setLstResources(dsGenerator.getListResources());
 				dsPlot.setStrFileName(dsGenerator.getStrDataSetFileName());
 				dsPlot.setStrPath(dsGenerator.getStrDataSetPath());
-				dsPlot.setStrSubFolder("initial");
+				dsPlot.setStrSubFolder(FolderDefs.dsPlotInitialPlotsFolderName);
 				dsPlot.plot();
 				
 				// then, let's apply a solver to it

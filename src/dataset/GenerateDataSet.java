@@ -186,9 +186,7 @@ public class GenerateDataSet {
 		}
 		numNodes = listTasks.size()-1;
 
-
 		// Resources generations
-		
 		Random rnd = new Random();
 		Random numRnd = new Random();
 
@@ -256,7 +254,52 @@ public class GenerateDataSet {
 		// writes the generated dataset on an XML file
 		WriteDataSetOnFile(strDSFileNamePrefix, listTasks, listResources, strPath, strFileSuff);
 	
+		// writes tasks definition on disk
+		writeTasksDefinitionOnDisk(lstRandomTasks, lstClusteredTasks);
+		
 		PerroUtils.print("Generation completed successfully (" + numNodes +" nodes generated).", true);
+	}
+
+	/**
+	 * Dumps on a folder on disk the definitions of the tasks in order to be retrieved later by the DSPlotter if needed
+	 *  
+	 * @param lstRandomTasks2			List of the tasks randomly generated 
+	 * @param lstClusteredTasks2		List of the clusters
+	 */
+	private void writeTasksDefinitionOnDisk(ArrayList<Task> lstRandomTasks2, ArrayList<ClusteredTasks> lstClusteredTasks2) {
+
+		String strTasksDefPath = strDataSetPath + FolderDefs.tasksFolderName;
+		if (!PerroUtils.prepareFolder(strTasksDefPath, false))
+			return;
+
+		String strClusterFileName = strTasksDefPath + "CLDEF_" + PerroUtils.returnFullFileNameWOExtension(strDataSetFileName)+ ".xml";
+		String strRndTaskFileName = strTasksDefPath + "RNDDEF_" + PerroUtils.returnFullFileNameWOExtension(strDataSetFileName)+ ".xml";
+		
+		XStream xstream = new XStream();
+		
+		String strXML = "";
+		
+		strXML = xstream.toXML(lstRandomTasks2);
+		
+        List<String> tmp = new ArrayList<String>();
+        tmp.add(strXML);
+		
+		try {
+			Files.write(Paths.get(strRndTaskFileName), tmp, StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		strXML = xstream.toXML(lstClusteredTasks2);
+		tmp.clear();
+        tmp.add(strXML);
+		
+		try {
+			Files.write(Paths.get(strClusterFileName), tmp, StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 	/**
@@ -559,7 +602,7 @@ public class GenerateDataSet {
 
 		// write the file on disk in the path specified by the arguments
 		if (strPath == "")
-			strDataSetPath = "resources/";
+			strDataSetPath = FolderDefs.resourcesFolderName;
 		else
 			strDataSetPath = strPath;
 

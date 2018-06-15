@@ -552,7 +552,7 @@ public class DSPlotter {
 	 */
 	public void writeOnDisk () {
 		
-		String sPath = strPath + "DSPlot";
+		String sPath = strPath + FolderDefs.dsPlotFolderName;
 		PerroUtils.prepareFolder(sPath, false);
 
 		if (strSubFolder != null) {

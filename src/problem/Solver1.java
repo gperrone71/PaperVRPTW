@@ -10,9 +10,11 @@ import com.graphhopper.jsprit.core.analysis.SolutionAnalyser;
 import com.graphhopper.jsprit.core.problem.Location;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
 import com.graphhopper.jsprit.core.problem.cost.TransportDistance;
+import com.graphhopper.jsprit.core.problem.job.Pickup;
 import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
+import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivities;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
 import com.graphhopper.jsprit.core.problem.vehicle.Vehicle;
 import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
@@ -23,6 +25,7 @@ import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
 import com.graphhopper.jsprit.core.util.RandomNumberGeneration;
 import com.graphhopper.jsprit.core.util.Solutions;
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.security.AnyTypePermission;
 import com.thoughtworks.xstream.security.NoTypePermission;
 
 import objects.*;
@@ -80,13 +83,14 @@ public class Solver1 {
 
 	private String strNameOfDS;
 	
-    VehicleRoutingProblemSolution solFound;			// solution found by the solver
+    private VehicleRoutingProblemSolution solFound;			// solution found by the solver
+    
 	private List<Task> lstTskSrvc = new ArrayList<Task>();	// list of tasks serviced by the best solution found by the solver
 	
 	// private lists for statistics
 	private List<TaskStats> lstTskStats = new ArrayList<TaskStats>();
-
-    
+	
+ 
     
 	/**
 	 * This constructor is used to initialize the solver by calling the parser and copying the lists of objects and resources into local variables
@@ -125,6 +129,7 @@ public class Solver1 {
 	 * Requires the method initSolver to be called first in order to choose the selected dataset to be solved
 	 * 
 	 * modified on 18/05/18 to add possibility of storing solutions results (useful when solving full ds)
+	 * modified on 15/06/18 to add possibility of writing routes using XML files (useful when plotting a solution)
 	 * 
 	 * @author gperr
 	 * 
@@ -140,47 +145,45 @@ public class Solver1 {
 		PerroUtils.print("Initializing the solver...", true);
 
 		// full file name for the solution file
-		String solutionPathName = strFullPath + "solutions/"; 
-		String solutionFileName = solutionPathName + PerroUtils.returnFullFileNameWOExtension(strNameOfDS)+"_solution.xml";
+		String solStatsPathName = strFullPath + FolderDefs.solutionStatsFolderName; 
+		String solStatsFileName = solStatsPathName + PerroUtils.returnFullFileNameWOExtension(strNameOfDS)+"_solution.xml";
+		
+		String solutionFileName = strFullPath + FolderDefs.routesFolderName + PerroUtils.returnFullFileNameWOExtension(strNameOfDS)+".xml";
 
 		// first of all check if I want to use stored solutions
 		if (bUseStoredSolution) {
-			if (Files.exists(Paths.get(solutionFileName))) {
-				PerroUtils.print("Found solution file : " + solutionFileName, true);
+			if (Files.exists(Paths.get(solStatsFileName))) {
+				PerroUtils.print("Found solution statistics file : " + solStatsFileName, true);
 
 				// file with solution exists -> read it and return the solution object
-				SolStats solution = new SolStats();
+				SolStats solutionStatistics = new SolStats();
 
 				// generates a new xml stream
 				XStream xstream = new XStream();
 
-				// security permissions for XStream
-				
+				// security permissions for XStream			
 				// clear out existing permissions and set own ones
 				xstream.addPermission(NoTypePermission.NONE);
 				xstream.allowTypeHierarchy(SolStats.class);
+				
+				// read file and converts from XML
+				solutionStatistics = (SolStats)xstream.fromXML(PerroUtils.getFileToString(solStatsFileName));
+				
+				// check if the solution file with the routes is available and if yes read it and stores it
+				if (Files.exists(Paths.get(solutionFileName))) {
+					PerroUtils.print("Found solution routes file : " + solutionFileName, true);
 
-				List<String> lstString = new ArrayList<String>();
+					// generates a new xml stream
+					XStream xstream1 = new XStream();
+					xstream.addPermission(AnyTypePermission.ANY);
 
-				// all lines from files are read and put in an arraylist
-				try {
-					lstString= Files.readAllLines(Paths.get(solutionFileName), StandardCharsets.UTF_8);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					// read file and converts from XML
+					solFound = (VehicleRoutingProblemSolution)xstream1.fromXML(PerroUtils.getFileToString(solutionFileName));
 				}
-
-				// convert list to a string
-				String strFileContents = "";
-				for (String str : lstString)
-					strFileContents += str;
 				
-				// and then extracts the object from the XML file
-				solution = (SolStats)xstream.fromXML(strFileContents);
-				
-				return solution;
+				return solutionStatistics;
 			} else 
-				PerroUtils.print("Solution file : " + solutionFileName + " not found - launching the solver.", true);
+				PerroUtils.print("Solution file : " + solStatsFileName + " not found - launching the solver.", true);
 				
 		}
 		
@@ -279,6 +282,10 @@ public class Solver1 {
 
         // and stores it in the data member
         solFound = bestSolution;
+        
+        // prepare folder and write solution to disk
+        if (PerroUtils.prepareFolder(strFullPath + "routes", false)) 
+        	writeRoutesOnDisk(solFound, solutionFileName);
 
         if (bVerbose)
         	SolutionPrinter.print(problem, bestSolution, SolutionPrinter.Print.VERBOSE);
@@ -307,8 +314,8 @@ public class Solver1 {
          * creates the "pics" subdir if doesn't exist
          * 
 		 */
-        if (PerroUtils.prepareFolder(strFullPath + "pics", false)) 
-        	new Plotter(problem,bestSolution).setLabel(Plotter.Label.ID).plot(strFullPath + "/pics/plot" + PerroUtils.returnFullFileNameWOExtension(strNameOfDS), strNameOfDS);
+        if (PerroUtils.prepareFolder(strFullPath + FolderDefs.jspritPlotterFolderName, false)) 
+        	new Plotter(problem,bestSolution).setLabel(Plotter.Label.ID).plot(strFullPath + FolderDefs.jspritPlotterFolderName + "plot" + PerroUtils.returnFullFileNameWOExtension(strNameOfDS), strNameOfDS);
 
         SolutionAnalyser a = new SolutionAnalyser(problem, bestSolution, new TransportDistance() {
             @Override
@@ -374,12 +381,12 @@ public class Solver1 {
 			lstString.add(xmlOut);
 			
 			// check if output folder exists and if not create it
-			if (PerroUtils.prepareFolder(solutionPathName, false)) {
+			if (PerroUtils.prepareFolder(solStatsPathName, false)) {
 						
-				PerroUtils.print("Attempting to write solution file " + solutionFileName + " on disk....", true);
+				PerroUtils.print("Attempting to write solution file " + solStatsFileName + " on disk....", true);
 				
 				try {
-					Files.write(Paths.get(solutionFileName), lstString, StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+					Files.write(Paths.get(solStatsFileName), lstString, StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 				} catch (IOException e) {
 					e.printStackTrace();
 				} 
@@ -388,6 +395,30 @@ public class Solver1 {
         
         // return the object with the data on the solution
         return solStats;       
+	}
+	
+	/**
+	 * Writes the routes on disk using a dedicated folder
+	 * @param solution the solution that contains the routes that we want to plot
+	 * 
+	 */
+	private void writeRoutesOnDisk(VehicleRoutingProblemSolution solution, String fileName) {
+
+		XStream xstream = new XStream();
+		
+		String strXML = "";
+		
+		strXML = xstream.toXML(solution);
+		
+        List<String> tmp = new ArrayList<String>();
+        tmp.add(strXML);
+		
+		try {
+			Files.write(Paths.get(fileName), tmp, StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 	}
 	
 	/**
@@ -787,6 +818,20 @@ public class Solver1 {
 	}
 
 
+	public double getDbMaxX() {
+		return dbMaxX;
+	}
+
+
+	public double getDbMaxY() {
+		return dbMaxY;
+	}
+
+
+	public double getDbTskDens() {
+		return dbTskDens;
+	}
+
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		
@@ -802,21 +847,6 @@ public class Solver1 {
 			
 		
     }
-
-
-	public double getDbMaxX() {
-		return dbMaxX;
-	}
-
-
-	public double getDbMaxY() {
-		return dbMaxY;
-	}
-
-
-	public double getDbTskDens() {
-		return dbTskDens;
-	}
 
 
 }

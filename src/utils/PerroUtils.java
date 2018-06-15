@@ -235,7 +235,31 @@ public class PerroUtils {
 		
 		return lstString;
 	}
-	
+
+	/**
+	 * Reads all lines from a file and returns the content in a String
+	 * 
+	 * @param 	fileName	string containing name of the file to be read
+	 * @return	String 		String object containing the lines of the file read (one item per each line)
+	 */
+	public static String getFileToString(String fileName) {
+		
+		List<String> lstString = new ArrayList<String>();
+		String result = "";
+				
+		// all lines from files are read and put in an arraylist
+		try {
+			lstString= Files.readAllLines(Paths.get(fileName), StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+		for (String s : lstString)
+			result += s;
+		
+		return result;
+	}
 	/**
 	 * Returns an ArrayList of Strings with the single items included in the line to be parsed from the csv
 	 * Separator to be used in passed as parameter
