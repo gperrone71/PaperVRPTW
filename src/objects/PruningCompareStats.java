@@ -22,6 +22,7 @@ public class PruningCompareStats {
 	// Information describing the instance
 	private String strInstanceName;		// "name" of the instance, i.e. its file name
 	private String strHash;				// hash code for the instance
+	private String strDSType;			// Type of the dataset (RC, RU, C)
 	private int numClusters;			// number of clusters in the ds
 	private int numResources;			// number of resources in this execution
 	private double dbMaxX;				// maximum value for X
@@ -659,6 +660,14 @@ public class PruningCompareStats {
 
 	public void setNumClusters(int numClusters) {
 		this.numClusters = numClusters;
+	}
+
+	public String getStrDSType() {
+		return strDSType;
+	}
+
+	public void setStrDSType(String strDSType) {
+		this.strDSType = strDSType;
 	}
 
 
