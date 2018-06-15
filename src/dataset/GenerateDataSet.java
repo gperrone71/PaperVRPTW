@@ -272,8 +272,8 @@ public class GenerateDataSet {
 		if (!PerroUtils.prepareFolder(strTasksDefPath, false))
 			return;
 
-		String strClusterFileName = strTasksDefPath + "CLDEF_" + PerroUtils.returnFullFileNameWOExtension(strDataSetFileName)+ ".xml";
-		String strRndTaskFileName = strTasksDefPath + "RNDDEF_" + PerroUtils.returnFullFileNameWOExtension(strDataSetFileName)+ ".xml";
+		String strClusterFileName = strTasksDefPath + FilePrefixes.clusterDefinitionPrefix + PerroUtils.returnFullFileNameWOExtension(strDataSetFileName)+ ".xml";
+		String strRndTaskFileName = strTasksDefPath + FilePrefixes.rndTaskDefinitionPrefix + PerroUtils.returnFullFileNameWOExtension(strDataSetFileName)+ ".xml";
 		
 		XStream xstream = new XStream();
 		

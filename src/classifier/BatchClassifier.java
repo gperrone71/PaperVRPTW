@@ -177,7 +177,6 @@ public class BatchClassifier {
 		    		String strDSFileNamePrefix = returnDSFileNamePrefix(objFileParse.getStrFileName());		// stores the type of DS in order to be able to use it later
 					String strDSFileNameSuffix = returnFullFileNameWOExtension(objFileParse.getStrFileName());
 					strDSFileNameSuffix = strDSFileNameSuffix.substring(strDSFileNameSuffix.lastIndexOf('_')+1);	// get the string from the last occurrence of "_" (without it) until the end of the string
-					PerroUtils.print("** " + objFileParse.getStrFileName() + " --> " + strDSFileNameSuffix);
 		    		// init variables
 		    		List<Task> lstPrunedTasks = new ArrayList<Task>();
 		    		List<Resource> lstPrunedResources = new ArrayList<Resource>();
@@ -322,7 +321,9 @@ public class BatchClassifier {
 					// generation of a plot using DSPlotter
 					DSPlotter dsPlot = new DSPlotter(1000, 1000, strXMLFileName);
 					dsPlot.setStrSubTitle("Unpruned datasource");
-					dsPlot.setLstRandomTasks((ArrayList<Task>) lstTasks);
+					dsPlot.setStrFileNameForTasksDefinitions(PerroUtils.returnFullFileNameWOExtension(strXMLFileName));
+					dsPlot.setbReadTasksDefinitionFiles(true);
+					//dsPlot.setLstRandomTasks((ArrayList<Task>) lstTasks);
 					dsPlot.setLstResources((ArrayList<Resource>) lstResources);
 					dsPlot.setStrFileName(PerroUtils.returnFullFileNameWOExtension(strXMLFileName) + "_00(UP)");
 					dsPlot.setSolutionStats(tmpSolStat);
@@ -375,6 +376,7 @@ public class BatchClassifier {
 				    // create another plot for pruned ds
 				    dsPlot.clear();
 					dsPlot.setStrSubTitle("PRUNED w/ CLASSIFIER");
+					dsPlot.setbReadTasksDefinitionFiles(false);
 					dsPlot.setLstRandomTasks((ArrayList<Task>) lstPrunedTasks);
 					dsPlot.setLstResources((ArrayList<Resource>) lstResources);
 					dsPlot.setStrFileName(PerroUtils.returnFullFileNameWOExtension(strXMLFileName) + "_01(PR)");

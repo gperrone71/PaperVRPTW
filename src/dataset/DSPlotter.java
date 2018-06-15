@@ -13,6 +13,8 @@ import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
@@ -20,6 +22,9 @@ import javax.imageio.ImageIO;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
 import com.graphhopper.jsprit.core.problem.solution.route.VehicleRoute;
 import com.graphhopper.jsprit.core.problem.solution.route.activity.TourActivity;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.security.AnyTypePermission;
+import com.thoughtworks.xstream.security.NoTypePermission;
 
 import objects.*;
 import utils.PerroUtils;
@@ -81,6 +86,7 @@ public class DSPlotter {
 	private String strFileName;																	// String holding the name of the ds being plotted
 	private String strPath;																		// String holding the path of the ds being plotted
 	private String strSubFolder;																// optional string holding the subfolder where png has to be written
+	private String strFileNameForTasksDefinitions;												// optional String holding the name of the ds for which the tasks definitions have been written
 	
 	// behaviour flags
 	private boolean bWriteTasksText = true;														// specify if text on tasks has to be written
@@ -88,6 +94,7 @@ public class DSPlotter {
 	private boolean bUseDiffColorsPerCluster = true;											// specify if different colors have to be used per each cluster
 	private boolean bUSeDiffColorsPerResources = true;											// specify if different colors have to be used per each resource when plotting a solution
 	private boolean bShowAxisTicks = true;
+	private boolean bReadTasksDefinitionFiles = false;											// if set to true, force reading of tasks definitions from files
 	
 	// constructor used to initialize the object
 	public DSPlotter (int w, int h, String title) {
@@ -115,6 +122,10 @@ public class DSPlotter {
 	 */
 	public void plot () {
 		
+        // if I have to read tasks definition from files then do so (instead of relying on setters)
+        if (bReadTasksDefinitionFiles)
+        	readTasksDefinitionFromFiles();
+        
         // retrieves the maximum values of X and Y
 		// if the BatchConfig obj is loaded use it otherwise calculate the values based on the max coordinates of the tasks
 		if (configItem == null) {
@@ -177,6 +188,44 @@ public class DSPlotter {
         writeOnDisk();
 	}
 
+	/**
+	 * Reads tasks definitions from the XML stored by the solver in the dedicated sub-folder
+	 * Uses pre-defined prefixes to identify the tasks definitions
+	 * 
+	 */
+	@SuppressWarnings("unchecked")
+	private void readTasksDefinitionFromFiles() {
+		
+		if (strFileNameForTasksDefinitions.length() == 0)
+			strFileNameForTasksDefinitions = strFileName;
+		
+		String strTasksDefPath = strPath + FolderDefs.tasksFolderName;
+
+		String strClusterFileName = strTasksDefPath + FilePrefixes.clusterDefinitionPrefix + PerroUtils.returnFullFileNameWOExtension(strFileNameForTasksDefinitions)+ ".xml";
+		String strRndTaskFileName = strTasksDefPath + FilePrefixes.rndTaskDefinitionPrefix + PerroUtils.returnFullFileNameWOExtension(strFileNameForTasksDefinitions)+ ".xml";
+
+		// generates a new xml stream
+		XStream xstream = new XStream();
+
+		// security permissions for XStream			
+		// clear out existing permissions and set own ones
+		xstream.addPermission(AnyTypePermission.ANY);
+		
+		// read XML file for randomly generated tasks and converts from XML
+		lstRandomTasks = (ArrayList<Task>)xstream.fromXML(PerroUtils.getFileToString(strRndTaskFileName));
+		
+		// generates a new xml stream
+		XStream xstream1 = new XStream();
+		xstream1.addPermission(AnyTypePermission.ANY);
+
+		// read XML file for clustered tasks and converts from XML
+		lstClusteredTasks = (ArrayList<ClusteredTasks>)xstream1.fromXML(PerroUtils.getFileToString(strClusterFileName));
+		bShowClusterRadius = true;
+		
+		PerroUtils.print("Retrieved : " + lstRandomTasks.size() + " randomly generated tasks and " + lstClusteredTasks.size() + " clusters", true);
+	}
+
+
 	/*
 	 * Draws the tasks generated randomly
 	 * 
@@ -210,14 +259,19 @@ public class DSPlotter {
         g.drawString("MaxY      = " + String.format("%.1f", maxY), 20, 30);
         g.drawString("#Res      = " + lstResources.size(), 20, 40);
         
-        if (configItem != null) {
+        if (bReadTasksDefinitionFiles) {
             g.drawString("#RNDTasks = " + lstRandomTasks.size(), 20, 50);
-        	g.drawString("#Clusters = " + configItem.getiNumClusters(), 20, 60);
-        	g.drawString("#CluTasks = " + iTotClusteredTasks, 20, 70);
-        	g.drawString("Spread f  = " + configItem.getdExpFactor(), 20, 80);
-        }
-        else
-            g.drawString("#Tasks    = " + lstRandomTasks.size(), 20, 50);
+        	g.drawString("#Clusters = " + lstClusteredTasks.size(), 20, 60);
+        	g.drawString("#CluTasks = " + iTotClusteredTasks, 20, 70);       	
+        } else    
+	        if (configItem != null) {
+	            g.drawString("#RNDTasks = " + lstRandomTasks.size(), 20, 50);
+	        	g.drawString("#Clusters = " + configItem.getiNumClusters(), 20, 60);
+	        	g.drawString("#CluTasks = " + iTotClusteredTasks, 20, 70);
+	        	g.drawString("Spread f  = " + configItem.getdExpFactor(), 20, 80);
+	        }
+	        else
+	            g.drawString("#Tasks    = " + lstRandomTasks.size(), 20, 50);
 
 	}
 	
@@ -771,6 +825,26 @@ public class DSPlotter {
 
 	public void setStrSubFolder(String strSubFolder) {
 		this.strSubFolder = strSubFolder;
+	}
+
+	public boolean isbReadTasksDefinitionFiles() {
+		return bReadTasksDefinitionFiles;
+	}
+
+	public void setbReadTasksDefinitionFiles(boolean bReadTasksDefinitionFiles) {
+		if (!bReadTasksDefinitionFiles) {
+			this.lstClusteredTasks.clear();
+			this.lstRandomTasks.clear();
+		}
+		this.bReadTasksDefinitionFiles = bReadTasksDefinitionFiles;
+	}
+
+	public String getStrFileNameForTasksDefinitions() {
+		return strFileNameForTasksDefinitions;
+	}
+
+	public void setStrFileNameForTasksDefinitions(String strFileNameForTasksDefinitions) {
+		this.strFileNameForTasksDefinitions = strFileNameForTasksDefinitions;
 	}
 
 }
