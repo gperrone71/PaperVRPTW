@@ -123,6 +123,8 @@ public class BatchClassifier {
 	 */
 	public void executeBatchClassifier() {
 
+		boolean bFirstLoop = true;
+		
 		List<Task> lstTasks = new ArrayList<Task>();
 		List<Resource> lstResources = new ArrayList<Resource>();
 		List<FileParse> lstFileToBeParsed = new ArrayList<FileParse>();
@@ -165,7 +167,8 @@ public class BatchClassifier {
 
 		// outer loop: execute per each of the .arff file stored in the file list
 		for (FileParse tmpObj : lstFileToBeParsed)
-			tmpObj.setbTestSet(false);		
+			tmpObj.setbTestSet(false);
+			long lTimerForFirstIteration = System.currentTimeMillis();
 		
 		    try {
 		    	
@@ -659,6 +662,20 @@ public class BatchClassifier {
 				
 				// REM this line if pruning comparison is switched off
 				ClassifiersUtils.pruningStatsToCSV(false, strPath, "_PRCOMP", lstPruningCompareStats);
+				
+				// if this has been the first iteration then send an email with the time elapsed for the first loop
+				if (bFirstLoop) {
+					bFirstLoop = false;
+					long elapsedTimeAtFirstIteration = (System.currentTimeMillis() - lTimerForFirstIteration)/1000;
+					long estimatedCompletion = elapsedTimeAtFirstIteration * lstFileToBeParsed.size();
+					Email intermediateEmail = EmailBuilder.startingBlank()
+						    .from("Giovanni Perrone", "gperrone71@yahoo.it")
+						    .to("Me", "gperrone71@gmail.com")
+						    .withSubject("PAPERVRPTW-CLASSIFIER: First iteration for " + strPath + " complete")
+						    .withPlainText("First iteration complete after " + elapsedTimeAtFirstIteration + " s (" + elapsedTimeAtFirstIteration/3600 + " hours) \nEstimated " + (estimatedCompletion) + " s (" + estimatedCompletion/3600 + " hours) to complete." )
+						    .buildEmail();
+					PerroUtils.emailSender(intermediateEmail);	
+				}
 	
 	/*	
 				 String[] options = new String[2];

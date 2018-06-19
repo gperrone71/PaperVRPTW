@@ -97,10 +97,11 @@ public class BatchLauncher {
 		Email email = EmailBuilder.startingBlank()
 			    .from("Giovanni Perrone", "gperrone71@yahoo.it")
 			    .to("Me", "gperrone71@gmail.com")
-			    .withSubject("PAPERVRPTW: Start Batch Launcher for " + strConfigFileName)
-			    .withPlainText("PAPERVRPTW: Start Batch Launcher for " + strConfigFileName)
+			    .withSubject("PAPERVRPTW-CREATE DS: Start Batch Launcher for " + strConfigFileName)
+			    .withPlainText("Started Batch Launcher for DS generation for " + strConfigFileName)
 			    .buildEmail();
 		PerroUtils.emailSender(email);
+		boolean bFirstLoop = true;
 		
 		
 		// Read the xml configuration file and populates the list of the jobs to be executed
@@ -158,6 +159,8 @@ public class BatchLauncher {
 				dsPlot.setStrSubFolder(FolderDefs.dsPlotInitialPlotsFolderName);
 				dsPlot.plot();
 				
+				long lTimerForFirstIteration = System.currentTimeMillis();
+				
 				// then, let's apply a solver to it
 				Solver1 problemSolver = new Solver1(dsGenerator.getStrDataSetPath(), dsGenerator.getStrDataSetFileName());
 				
@@ -189,7 +192,20 @@ public class BatchLauncher {
 				problemSolver.generateARFF(strFullPath, false, false);		// generate in any case the full arff file (including class labels)
 				if (batchObj.isbGenerateTestSet())				// if a test set (without labels) has to be generated then do so 
 					problemSolver.generateARFF(strFullPath, false, true);
-				
+
+				// if this has been the first iteration then send an email with the time elapsed for the first loop
+				if (bFirstLoop) {
+					bFirstLoop = false;
+					long elapsedTimeAtFirstIteration = (System.currentTimeMillis() - lTimerForFirstIteration)/1000;
+					long estimatedCompletion = elapsedTimeAtFirstIteration * iNumInstancesOfThisKind;
+					Email intermediateEmail = EmailBuilder.startingBlank()
+						    .from("Giovanni Perrone", "gperrone71@yahoo.it")
+						    .to("Me", "gperrone71@gmail.com")
+						    .withSubject("PAPERVRPTW-CREATE DS: First iteration for " + strConfigFileName + " complete")
+						    .withPlainText("First iteration complete after " + elapsedTimeAtFirstIteration + " s (" + elapsedTimeAtFirstIteration/3600 + " hours) \nEstimated " + (estimatedCompletion) + " s (" + estimatedCompletion/3600 + " hours) to complete." )
+						    .buildEmail();
+					PerroUtils.emailSender(intermediateEmail);	
+				}
 				iInstancesCounter++;
 			}
 			
@@ -206,7 +222,7 @@ public class BatchLauncher {
 		Email finalEmail = EmailBuilder.startingBlank()
 			    .from("Giovanni Perrone", "gperrone71@yahoo.it")
 			    .to("Me", "gperrone71@gmail.com")
-			    .withSubject("PAPERVRPTW: END Classifier job " + strConfigFileName)
+			    .withSubject("PAPERVRPTW-CREATE DS: END Classifier job " + strConfigFileName)
 			    .withPlainText("Processing complete after " + elapsedTime + " s (" + elapsedTime/3600 + " hours) \nGenerated " + (iInstancesCounter+1) + " instances." )
 			    .buildEmail();
 		PerroUtils.emailSender(finalEmail);		
