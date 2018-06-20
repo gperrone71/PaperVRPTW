@@ -139,6 +139,7 @@ public class BatchClassifier {
 		final FileNameExtensionFilter extensionFilter = new FileNameExtensionFilter("ARFF", "arff");
 
 		String strEmailBody = "Started batch classifier job for file " + strPath ;
+		
 		long timeNow = System.currentTimeMillis();
 		
 		// create a list of the .arff files that are available in the selected folder
@@ -150,7 +151,7 @@ public class BatchClassifier {
 					tmp.setStrFileName(fileInDir.getName());
 					tmp.setbTestSet(false);
 					lstFileToBeParsed.add(tmp);
-					strEmailBody += "\n" + fileInDir.getName();
+					strEmailBody += "\n" + fileInDir.getName();		// add to the email body the name of the files
 				}
 		}
 		
