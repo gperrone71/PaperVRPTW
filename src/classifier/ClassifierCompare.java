@@ -156,7 +156,7 @@ public class ClassifierCompare {
 		
 		strEmailBody += "\n#" + lstFileToBeParsed.size() + " files to be processed:";
 		
-		/**
+		
 		// prepare email object
 		Email email = EmailBuilder.startingBlank()
 			    .from("Giovanni Perrone", "gperrone71@yahoo.it")
@@ -165,7 +165,7 @@ public class ClassifierCompare {
 			    .withPlainText(strEmailBody)
 			    .buildEmail();
 		PerroUtils.emailSender(email);
-		*/
+		
 
 		// outer loop: execute per each of the .arff file stored in the file list
 		for (FileParse tmpObj : lstFileToBeParsed)
@@ -264,21 +264,21 @@ public class ClassifierCompare {
 					Evaluation eval = new Evaluation(dataTrain);
 					eval.evaluateModel(clsJ48, testSet);
 					tmpClPerf.getLstClsPerf().add(getClassifierPerformanceValues(clsJ48.getClass().getSimpleName(), eval));
-					PerroUtils.print("\nJ48:\n" + eval.toClassDetailsString());
+//					PerroUtils.print("\nJ48:\n" + eval.toClassDetailsString());
 					
 					// Bayes
 					eval.evaluateModel(clsBayes, testSet);
 					tmpClPerf.getLstClsPerf().add(getClassifierPerformanceValues(clsBayes.getClass().getSimpleName(), eval));
-					PerroUtils.print("\nBayes\n" + eval.toClassDetailsString());
+//					PerroUtils.print("\nBayes\n" + eval.toClassDetailsString());
 					
 					// Random Forest
 					eval.evaluateModel(clsRndForest, testSet);
 					tmpClPerf.getLstClsPerf().add(getClassifierPerformanceValues(clsRndForest.getClass().getSimpleName(), eval));
-					PerroUtils.print("\nRnd Forest\n" + eval.toClassDetailsString());
+//					PerroUtils.print("\nRnd Forest\n" + eval.toClassDetailsString());
 
 					// SVM
 					eval.evaluateModel(clsSVM, testSet);
-					tmpClPerf.getLstClsPerf().add(getClassifierPerformanceValues(clsSVM.getClass().getSimpleName(), eval));
+//					tmpClPerf.getLstClsPerf().add(getClassifierPerformanceValues(clsSVM.getClass().getSimpleName(), eval));
 					PerroUtils.print("\nSVM\n" + eval.toClassDetailsString());
 
 					
@@ -299,7 +299,7 @@ public class ClassifierCompare {
 			e.printStackTrace();
 		}
 	
-	 /**
+	 
 		// prepare email object
 		long elapsedTime = (System.currentTimeMillis() - timeNow)/1000;
 		Email finalEmail = EmailBuilder.startingBlank()
@@ -309,7 +309,7 @@ public class ClassifierCompare {
 			    .withPlainText("Processing complete after " + elapsedTime + " s (" + elapsedTime/3600 + " hours)")
 			    .buildEmail();
 		PerroUtils.emailSender(finalEmail);
-		*/			    
+					    
 	}
 	
 
@@ -371,7 +371,8 @@ public class ClassifierCompare {
 		strList.add(lstClassifiersPerformances.get(0).getHeaderString());
 
 		// create the header string
-		PerroUtils.print(""+ lstClassifiersPerformances.get(0).getHeaderString());
+		if (prtOnScreen)
+			PerroUtils.print(""+ lstClassifiersPerformances.get(0).getHeaderString());
 
 		for (ClassifierPerformance tmp : lstClassifiersPerformances) {
 			String str = tmp.toString();
@@ -383,13 +384,41 @@ public class ClassifierCompare {
 		PerroUtils.writeCSV(strFullFileName, strList);
 	}
 
+	/**
+	 * @return the lstClassifiersPerformances
+	 */
+	public ArrayList<ClassifierPerformance> getLstClassifiersPerformances() {
+		return lstClassifiersPerformances;
+	}
 	
+	/**
+	 * @param lstClassifiersPerformances the lstClassifiersPerformances to set
+	 */
+	public void setLstClassifiersPerformances(ArrayList<ClassifierPerformance> lstClassifiersPerformances) {
+		this.lstClassifiersPerformances = lstClassifiersPerformances;
+	}
+
+	/**
+	 * @return the lstConfigObj
+	 */
+	public ArrayList<BatchConfig> getLstConfigObj() {
+		return lstConfigObj;
+	}
+
+	/**
+	 * @return the strPath
+	 */
+	public String getStrPath() {
+		return strPath;
+	}
+
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+
+		ArrayList<ClassifierPerformance> lstClsPerf = new ArrayList<>();
 
 		// attempt to launch a batch for all files in the "/batch" directory
 		final File filObj = new File("resources/batch");
@@ -413,9 +442,13 @@ public class ClassifierCompare {
 					PerroUtils.print("Launching batch job " + strBatchName);
 					tmp.NewBatchJob(strBatchName);		//loads the jobs configuration
 					tmp.executeBatchClassifier();				// launches the classifier
+					lstClsPerf.addAll(tmp.getLstClassifiersPerformances());
 				}
+			}
+		ClassifierCompare tmp = new ClassifierCompare();
+		tmp.setLstClassifiersPerformances(lstClsPerf);
+		tmp.writeClassifierPerformanceStats(false, "output");
+		
 		}
+}
 
-		}
-
-	}
