@@ -278,10 +278,9 @@ public class ClassifierCompare {
 
 					// SVM
 					eval.evaluateModel(clsSVM, testSet);
-//					tmpClPerf.getLstClsPerf().add(getClassifierPerformanceValues(clsSVM.getClass().getSimpleName(), eval));
-					PerroUtils.print("\nSVM\n" + eval.toClassDetailsString());
-
-					
+					tmpClPerf.getLstClsPerf().add(getClassifierPerformanceValues(clsSVM.getClass().getSimpleName(), eval));
+//					PerroUtils.print("\nSVM\n" + eval.toClassDetailsString());
+	
 					// and then add to the list
 					lstClassifiersPerformances.add(tmpClPerf);
 					

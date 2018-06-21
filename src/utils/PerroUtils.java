@@ -53,8 +53,8 @@ public class PerroUtils {
 		   .sendMail(email);
 		  } catch (Exception e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
-				PerroUtils.print("Unable to send email");
+				// e.printStackTrace();
+				PerroUtils.print("WARNING Unable to send email", true);
 			}
 	}
 	
