@@ -9,6 +9,10 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
@@ -37,6 +41,7 @@ import org.simplejavamail.email.EmailBuilder;
 
 /**
  * Class implementing a performance comparison between different classifiers using cross validation
+ * Includes support for multithreading
  * 
  * 24/06/2018
  * 
@@ -53,6 +58,102 @@ public class ClassCompCrossValidationMultiThreaded {
 		
 		private ArrayList<BatchConfig> lstConfigObj = new ArrayList<BatchConfig>();
 		private String strPath;
+		
+		/**
+		 * class actually performing the training and evaluation
+		 * 
+		 * @author gperr
+		 *
+		 */
+		
+		public class TrainAndEvaluate implements Callable<ClassifierPerformance>{
+			private Instances dataTrain;
+			private Instances dataTest;
+			private int iNumFold;
+			private String strHeader;
+			private String strTimeStamp;
+			
+			public TrainAndEvaluate(Instances train, Instances eval, int nFold, String strHdr,String strTimSt) {
+				this.dataTrain = train;
+				this.dataTest = eval;
+				this.iNumFold = nFold;
+				this.strHeader = strHdr;
+				this.strTimeStamp = strTimSt;
+			}
+			
+			public ClassifierPerformance call() {
+
+				PerroUtils.print("T" + iNumFold + " | Start");
+
+				// classifiers generation
+			    AttributeSelectedClassifier clsJ48 = new AttributeSelectedClassifier();
+			    NaiveBayes clsBayes = new NaiveBayes();
+			    SMO clsSVM = new SMO();
+			    RandomForest clsRndForest = new RandomForest();
+			    
+			    
+			    // randomize the original dataset
+			    	    			
+				// create a temp element for the classifier performance list
+				ClassifierPerformance tmpClPerf = new ClassifierPerformance();
+				tmpClPerf.setStrTimeStampDay(strTimeStamp);
+				tmpClPerf.setStrInstanceName(strHeader);
+				
+				try {	
+					PerroTimer timer1 = new PerroTimer();
+					PerroUtils.print("T" + iNumFold + " | Building J48");
+		
+					timer1.stop();
+					PerroTimer timer2 = new PerroTimer();
+					clsJ48.buildClassifier(dataTrain);
+					PerroUtils.print("T" + iNumFold + " | Building Bayes");
+
+					clsBayes.buildClassifier(dataTrain);
+		
+					timer2.stop();
+					PerroTimer timer3 = new PerroTimer();
+					PerroUtils.print("T" + iNumFold + " | Building Random Forest");
+					clsRndForest.buildClassifier(dataTrain);
+		
+					timer3.stop();
+					PerroTimer timer4 = new PerroTimer();
+					PerroUtils.print("T" + iNumFold + " | Building SVM");
+					clsSVM.buildClassifier(dataTrain);
+					timer4.stop();
+					
+					
+					// start evaluation
+					// J48
+					Evaluation eval = new Evaluation(dataTrain);
+					eval.evaluateModel(clsJ48, dataTest);
+					tmpClPerf.getLstClsPerf().add(getClassifierPerformanceValues(clsJ48.getClass().getSimpleName(), eval, timer1.getElapsedS()));
+		//			PerroUtils.print("\nJ48:\n" + eval.toClassDetailsString());
+					
+					// Bayes
+					eval.evaluateModel(clsBayes, dataTest);
+					tmpClPerf.getLstClsPerf().add(getClassifierPerformanceValues(clsBayes.getClass().getSimpleName(), eval, timer2.getElapsedS()));
+		//			PerroUtils.print("\nBayes\n" + eval.toClassDetailsString());
+					
+					// Random Forest
+					eval.evaluateModel(clsRndForest, dataTest);
+					tmpClPerf.getLstClsPerf().add(getClassifierPerformanceValues(clsRndForest.getClass().getSimpleName(), eval, timer3.getElapsedS()));
+		//			PerroUtils.print("\nRnd Forest\n" + eval.toClassDetailsString());
+		
+					// SVM
+					eval.evaluateModel(clsSVM, dataTest);
+					tmpClPerf.getLstClsPerf().add(getClassifierPerformanceValues(clsSVM.getClass().getSimpleName(), eval, timer4.getElapsedS()));
+		//			PerroUtils.print("\nSVM\n" + eval.toClassDetailsString());
+					
+			    } catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}			
+
+				return tmpClPerf;
+			}
+			
+		}
+		
 		
 		/**
 		 * Parses an XML file containing a batch job and populates the list of jobs.
@@ -122,7 +223,9 @@ public class ClassCompCrossValidationMultiThreaded {
 		 *  	
 		 */
 		public void executeBatchClassifier() {
-			
+
+			// executor service
+			ExecutorService exec = Executors.newCachedThreadPool();
 
 			PerroTimer timer0 = new PerroTimer();
 			
@@ -188,85 +291,49 @@ public class ClassCompCrossValidationMultiThreaded {
 					    .withSubject("PAPERVRPTW: Start Classifier comparison job " + strPath)
 					    .withPlainText(strEmailBody)
 					    .buildEmail();
-				// PerroUtils.emailSender(email);
+				PerroUtils.emailSender(email);
 				
+				// main loop
 				for (int nIte = 0; nIte < nIterations; nIte++) {
 					
+					ArrayList<Future<ClassifierPerformance>> resultsFromThreads = new ArrayList<Future<ClassifierPerformance>>();
+					
 					PerroUtils.print("Iteration " + nIte + " out of " + nIterations,true);
-				
-					// classifiers generation
-				    AttributeSelectedClassifier clsJ48 = new AttributeSelectedClassifier();
-				    NaiveBayes clsBayes = new NaiveBayes();
-				    SMO clsSVM = new SMO();
-				    RandomForest clsRndForest = new RandomForest();
-				    
-				    
+
 				    // randomize the original dataset
 				    Random rand = new Random(System.currentTimeMillis());   // create seeded number generator
 				    Instances randData = new Instances(dataset);   			// create copy of original data
 				    randData.randomize(rand);         						// randomize data with number generator
-				    	    			
+				    	    
+				    // loop per single iteration:
+				    // A) launch the threads
+				    // B) collect the values
 				    for (int i = 0; i < nFolds; i++) {
 						// create a temp element for the classifier performance list
-						ClassifierPerformance tmpClPerf = new ClassifierPerformance();
-						
-						tmpClPerf.setStrInstanceName("Run:"+ nIte + "- Fold:"+i);
-						
-						tmpClPerf.setStrTimeStampDay(strTimeStampDay);
+				    	String strTmp = "Run:"+ nIte + "- Fold:"+i;
 					
 					    // generate the training and test set using cross-validation
 					    Instances dataTrain = randData.trainCV(nFolds, i);
 					    Instances dataTest = randData.testCV(nFolds, i);
-	
-						// build the classifiers
-						PerroUtils.print("Building classifiers for fold " + i, true);
-			
-						PerroTimer timer1 = new PerroTimer();					
-						PerroUtils.print("           Building J48");
-			
-						timer1.stop();
-						PerroTimer timer2 = new PerroTimer();
-						clsJ48.buildClassifier(dataTrain);
-						PerroUtils.print("           Building Bayes");
-						clsBayes.buildClassifier(dataTrain);
-			
-						timer2.stop();
-						PerroTimer timer3 = new PerroTimer();
-						PerroUtils.print("           Building Random Forest");
-						clsRndForest.buildClassifier(dataTrain);
-			
-						timer3.stop();
-						PerroTimer timer4 = new PerroTimer();
-						PerroUtils.print("           Building SVM");
-						clsSVM.buildClassifier(dataTrain);
-						timer4.stop();
-						
-						
-						// start evaluation
-						// J48
-						Evaluation eval = new Evaluation(dataTrain);
-						eval.evaluateModel(clsJ48, dataTest);
-						tmpClPerf.getLstClsPerf().add(getClassifierPerformanceValues(clsJ48.getClass().getSimpleName(), eval, timer1.getElapsedS()));
-			//			PerroUtils.print("\nJ48:\n" + eval.toClassDetailsString());
-						
-						// Bayes
-						eval.evaluateModel(clsBayes, dataTest);
-						tmpClPerf.getLstClsPerf().add(getClassifierPerformanceValues(clsBayes.getClass().getSimpleName(), eval, timer2.getElapsedS()));
-			//			PerroUtils.print("\nBayes\n" + eval.toClassDetailsString());
-						
-						// Random Forest
-						eval.evaluateModel(clsRndForest, dataTest);
-						tmpClPerf.getLstClsPerf().add(getClassifierPerformanceValues(clsRndForest.getClass().getSimpleName(), eval, timer3.getElapsedS()));
-			//			PerroUtils.print("\nRnd Forest\n" + eval.toClassDetailsString());
-			
-						// SVM
-						eval.evaluateModel(clsSVM, dataTest);
-						tmpClPerf.getLstClsPerf().add(getClassifierPerformanceValues(clsSVM.getClass().getSimpleName(), eval, timer4.getElapsedS()));
-			//			PerroUtils.print("\nSVM\n" + eval.toClassDetailsString());
-			
-						// and then add to the list
-						lstClassifiersPerformances.add(tmpClPerf);
+
+					    // launch all folds in parallel
+					    resultsFromThreads.add(exec.submit(new TrainAndEvaluate(dataTrain, dataTest, i, strTmp, strTimeStampDay)));
 				    }
+				    
+				    // wait until all threads are complete
+				    do {
+					    boolean bAllDone = true;
+				    	for (Future<ClassifierPerformance> tmp : resultsFromThreads)
+				    		bAllDone &= tmp.isDone();		// final result is true only if all threads have completed execution
+				    	if (bAllDone)
+				    		break;
+				    } while (true);
+				    	
+				    PerroUtils.print("All threads completed",true);
+				    
+			    	for (Future<ClassifierPerformance> tmp : resultsFromThreads)
+			    			lstClassifiersPerformances.add(tmp.get());
+
 				}
 				    
 		    } catch (Exception e) {
@@ -346,11 +413,11 @@ public class ClassCompCrossValidationMultiThreaded {
 			
 			List<String> strList = new ArrayList<String>();
 
-			strList.add(lstClassifiersPerformances.get(0).getHeaderString());
+			strList.add((lstClassifiersPerformances.get(0)).getHeaderString());
 
 			// create the header string
 			if (prtOnScreen)
-				PerroUtils.print(""+ lstClassifiersPerformances.get(0).getHeaderString());
+				PerroUtils.print(""+ (lstClassifiersPerformances.get(0)).getHeaderString());
 
 			for (ClassifierPerformance tmp : lstClassifiersPerformances) {
 				String str = tmp.toString();
