@@ -529,7 +529,7 @@ public class BatchClassifier {
 					// sort the list using the rand data type
 					Collections.sort(lstsrtAr, new sortArray());
 					
-					// copy the tasks from the original tasks list in the order defined by the randomly sorted array until I have copied a number of tasks equal to the size of the classiier-pruned dataset
+					// copy the tasks from the original tasks list in the order defined by the randomly sorted array until I have copied a number of tasks equal to the size of the classifier-pruned dataset
 					for (int i = 0; i < lstPrunedTasks.size(); i++)
 						lstPrRndTasks.add(lstTasks.get(lstsrtAr.get(i).getIndex()));
 				    
