@@ -27,6 +27,7 @@ import launchers.BatchLauncher;
 import objects.*;
 import problem.Solver1;
 import utils.ClassifiersUtils;
+import utils.PerroTimer;
 import utils.PerroUtils;
 
 import utils.XMLUtils;
@@ -225,24 +226,35 @@ public class ClassifierCompare {
 					
 					PerroUtils.print(" Finished loading datasets - added " + dataTrain.numInstances() + " instances.");
 					
-					
-					// end of main loop: I have all instances but the test set loaded and can build the classifiers
-					PerroUtils.print("Building classifiers", true);
-					PerroUtils.print("           Building J48");					
-					clsJ48.buildClassifier(dataTrain);
-					PerroUtils.print("           Building Bayes");
-					clsBayes.buildClassifier(dataTrain);
-					PerroUtils.print("           Building Random Forest");
-					clsRndForest.buildClassifier(dataTrain);
-					PerroUtils.print("           Building SVM");
-					clsSVM.buildClassifier(dataTrain);
-				
 					// loads the test set
 					PerroUtils.print("\nLoading " + fileNameTestSet + " as test set.");
 					ArffLoader testLoader = new ArffLoader();
 					testLoader.setFile(new File(fileNameTestSet));
 					Instances testSet = testLoader.getDataSet();
 					testSet.setClassIndex(testSet.numAttributes() - 1);
+
+					// build the classifiers
+					PerroUtils.print("Building classifiers", true);
+
+					PerroTimer timer1 = new PerroTimer();					
+					PerroUtils.print("           Building J48");
+
+					timer1.stop();
+					PerroTimer timer2 = new PerroTimer();
+					clsJ48.buildClassifier(dataTrain);
+					PerroUtils.print("           Building Bayes");
+					clsBayes.buildClassifier(dataTrain);
+
+					timer2.stop();
+					PerroTimer timer3 = new PerroTimer();
+					PerroUtils.print("           Building Random Forest");
+					clsRndForest.buildClassifier(dataTrain);
+
+					timer3.stop();
+					PerroTimer timer4 = new PerroTimer();
+					PerroUtils.print("           Building SVM");
+					clsSVM.buildClassifier(dataTrain);
+					timer4.stop();
 					
 					// create a temp element for the classifier performance list
 					ClassifierPerformance tmpClPerf = new ClassifierPerformance();
@@ -263,22 +275,22 @@ public class ClassifierCompare {
 					// J48
 					Evaluation eval = new Evaluation(dataTrain);
 					eval.evaluateModel(clsJ48, testSet);
-					tmpClPerf.getLstClsPerf().add(getClassifierPerformanceValues(clsJ48.getClass().getSimpleName(), eval));
+					tmpClPerf.getLstClsPerf().add(getClassifierPerformanceValues(clsJ48.getClass().getSimpleName(), eval, timer1.getElapsedS()));
 //					PerroUtils.print("\nJ48:\n" + eval.toClassDetailsString());
 					
 					// Bayes
 					eval.evaluateModel(clsBayes, testSet);
-					tmpClPerf.getLstClsPerf().add(getClassifierPerformanceValues(clsBayes.getClass().getSimpleName(), eval));
+					tmpClPerf.getLstClsPerf().add(getClassifierPerformanceValues(clsBayes.getClass().getSimpleName(), eval, timer2.getElapsedS()));
 //					PerroUtils.print("\nBayes\n" + eval.toClassDetailsString());
 					
 					// Random Forest
 					eval.evaluateModel(clsRndForest, testSet);
-					tmpClPerf.getLstClsPerf().add(getClassifierPerformanceValues(clsRndForest.getClass().getSimpleName(), eval));
+					tmpClPerf.getLstClsPerf().add(getClassifierPerformanceValues(clsRndForest.getClass().getSimpleName(), eval, timer3.getElapsedS()));
 //					PerroUtils.print("\nRnd Forest\n" + eval.toClassDetailsString());
 
 					// SVM
 					eval.evaluateModel(clsSVM, testSet);
-					tmpClPerf.getLstClsPerf().add(getClassifierPerformanceValues(clsSVM.getClass().getSimpleName(), eval));
+					tmpClPerf.getLstClsPerf().add(getClassifierPerformanceValues(clsSVM.getClass().getSimpleName(), eval, timer4.getElapsedS()));
 //					PerroUtils.print("\nSVM\n" + eval.toClassDetailsString());
 	
 					// and then add to the list
@@ -319,7 +331,7 @@ public class ClassifierCompare {
 	 * @param eval	The Evaluation object to be parsed
 	 * @return 		The ClassifierPerformance object populated
 	 */
-	private SingleClassifierPerformance getClassifierPerformanceValues(String str, Evaluation eval) {
+	private SingleClassifierPerformance getClassifierPerformanceValues(String str, Evaluation eval, long timeForTraining) {
 		SingleClassifierPerformance tmp = new SingleClassifierPerformance();
 
 		tmp.setStrClassifierName(str);
@@ -327,6 +339,7 @@ public class ClassifierCompare {
 		tmp.setDbRecall(eval.weightedRecall());
 		tmp.setDbConfMatrix(eval.confusionMatrix());
 		tmp.setDbAccuracy(eval.pctCorrect());
+		tmp.setlTimeForTraining(timeForTraining);
 		
 		return tmp;
 	}

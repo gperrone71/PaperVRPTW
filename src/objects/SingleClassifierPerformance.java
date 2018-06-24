@@ -16,6 +16,7 @@ import utils.NumericUtils;
 public class SingleClassifierPerformance {
 	
 	private String strClassifierName;
+	private long lTimeForTraining;		// time required for the training phase
 	private double dbPrecision;
 	private double dbRecall;
 	private double dbAccuracy;
@@ -137,6 +138,14 @@ public class SingleClassifierPerformance {
 
 	public void setStrClassifierName(String strClassifierName) {
 		this.strClassifierName = strClassifierName;
+	}
+
+	public long getlTimeForTraining() {
+		return lTimeForTraining;
+	}
+
+	public void setlTimeForTraining(long lTimeForTraining) {
+		this.lTimeForTraining = lTimeForTraining;
 	}
 
 

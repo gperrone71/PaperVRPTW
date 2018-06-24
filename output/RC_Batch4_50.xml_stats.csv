@@ -1,3 +1,0 @@
-numResources;numTasks;dbMaxX;dbMaxY;dbTasksDensity;numSolutionsFound;dblExecutionTime;iNumThreads;iTotServiced;iTotUnserviced;dbTraveledDistance;dbTotalCosts;dbTimeWinViolation;iNumVehiclesUsed;dbOperationTime;dbTransportTime;dbServiceTime;dbWaitingTime
-4;50;500,0;500,0;2,0E-4;2;1,357;24;14;36;1464,2874790279488;6735,722403528565;0,0;4;2216,287479027949;1464,287479027949;752,0;0,0
-4;50;500,0;500,0;2,0E-4;2;1,259;24;10;40;1387,8389720205173;6939,194860102587;0,0;4;2094,8660248649153;1387,8389720205173;672,0;35,027052844397986
