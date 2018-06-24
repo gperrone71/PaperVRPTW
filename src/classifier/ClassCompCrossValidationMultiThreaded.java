@@ -83,16 +83,13 @@ public class ClassCompCrossValidationMultiThreaded {
 			
 			public ClassifierPerformance call() {
 
-				PerroUtils.print("T" + iNumFold + " | Start");
+				PerroUtils.print("T" + iNumFold + " | Start", true);
 
 				// classifiers generation
 			    AttributeSelectedClassifier clsJ48 = new AttributeSelectedClassifier();
 			    NaiveBayes clsBayes = new NaiveBayes();
 			    SMO clsSVM = new SMO();
 			    RandomForest clsRndForest = new RandomForest();
-			    
-			    
-			    // randomize the original dataset
 			    	    			
 				// create a temp element for the classifier performance list
 				ClassifierPerformance tmpClPerf = new ClassifierPerformance();
@@ -101,23 +98,23 @@ public class ClassCompCrossValidationMultiThreaded {
 				
 				try {	
 					PerroTimer timer1 = new PerroTimer();
-					PerroUtils.print("T" + iNumFold + " | Building J48");
+					PerroUtils.print("T" + iNumFold + " | Building J48", true);
 		
 					timer1.stop();
 					PerroTimer timer2 = new PerroTimer();
 					clsJ48.buildClassifier(dataTrain);
-					PerroUtils.print("T" + iNumFold + " | Building Bayes");
+					PerroUtils.print("T" + iNumFold + " | Building Bayes", true);
 
 					clsBayes.buildClassifier(dataTrain);
 		
 					timer2.stop();
 					PerroTimer timer3 = new PerroTimer();
-					PerroUtils.print("T" + iNumFold + " | Building Random Forest");
+					PerroUtils.print("T" + iNumFold + " | Building Random Forest", true);
 					clsRndForest.buildClassifier(dataTrain);
 		
 					timer3.stop();
 					PerroTimer timer4 = new PerroTimer();
-					PerroUtils.print("T" + iNumFold + " | Building SVM");
+					PerroUtils.print("T" + iNumFold + " | Building SVM", true);
 					clsSVM.buildClassifier(dataTrain);
 					timer4.stop();
 					
@@ -143,6 +140,8 @@ public class ClassCompCrossValidationMultiThreaded {
 					eval.evaluateModel(clsSVM, dataTest);
 					tmpClPerf.getLstClsPerf().add(getClassifierPerformanceValues(clsSVM.getClass().getSimpleName(), eval, timer4.getElapsedS()));
 		//			PerroUtils.print("\nSVM\n" + eval.toClassDetailsString());
+					
+					PerroUtils.print("T" + iNumFold + " | done", true);			
 					
 			    } catch (Exception e) {
 					// TODO Auto-generated catch block
@@ -352,7 +351,7 @@ public class ClassCompCrossValidationMultiThreaded {
 				    .buildEmail();
 			PerroUtils.emailSender(finalEmail);
 			
-			PerroUtils.print("Finished.",true);
+			PerroUtils.print("Execution complete.",true);
 						    
 		}
 		
