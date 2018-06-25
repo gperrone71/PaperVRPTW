@@ -94,17 +94,17 @@ public class ClassCompCrossValidationMultiThreaded {
 				// create a temp element for the classifier performance list
 				ClassifierPerformance tmpClPerf = new ClassifierPerformance();
 				tmpClPerf.setStrTimeStampDay(strTimeStamp);
-				tmpClPerf.setStrInstanceName(strHeader);
+				tmpClPerf.setStrInstanceName(strPath);
+				tmpClPerf.setStrDSType(strHeader);
 				
 				try {	
 					PerroTimer timer1 = new PerroTimer();
 					PerroUtils.print("T" + iNumFold + " | Building J48", true);
-		
+					clsJ48.buildClassifier(dataTrain);
+
 					timer1.stop();
 					PerroTimer timer2 = new PerroTimer();
-					clsJ48.buildClassifier(dataTrain);
 					PerroUtils.print("T" + iNumFold + " | Building Bayes", true);
-
 					clsBayes.buildClassifier(dataTrain);
 		
 					timer2.stop();
