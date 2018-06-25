@@ -592,7 +592,7 @@ public class ClassCompStratCV_MT {
 			
 			DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
 			Date date = new Date();
-			String strFullFileName = strFullPath+ "/" + dateFormat.format(date) + "_Classifiers_compare.csv";
+			String strFullFileName = strFullPath+ "/" + dateFormat.format(date) + "_Classifiers_compare_StratifiedCrossValidation.csv";
 			
 			List<String> strList = new ArrayList<String>();
 
