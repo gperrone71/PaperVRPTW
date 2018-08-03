@@ -36,6 +36,7 @@ import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.evaluation.Evaluation;
 import weka.classifiers.functions.SMO;
 import weka.classifiers.meta.AttributeSelectedClassifier;
+import weka.classifiers.trees.J48;
 import weka.classifiers.trees.RandomForest;
 import weka.core.Instances;
 import weka.core.converters.ArffLoader;
@@ -144,7 +145,8 @@ public class ClassCompStratCV_MT {
 				PerroUtils.print("T" + iNumFold + " | Start - #Train inst: " + dataTrain.numInstances() + " #Eval inst: " + dataTest.numInstances(), true);
 
 				// classifiers generation
-			    AttributeSelectedClassifier clsJ48 = new AttributeSelectedClassifier();
+			    J48 clsJ48 = new J48();
+				AttributeSelectedClassifier clsAttSelJ48 = new AttributeSelectedClassifier();
 			    NaiveBayes clsBayes = new NaiveBayes();
 			    SMO clsSVM = new SMO();
 			    RandomForest clsRndForest = new RandomForest();
@@ -156,9 +158,14 @@ public class ClassCompStratCV_MT {
 				tmpClPerf.setStrInstanceName(strPath);
 				
 				try {	
-					PerroTimer timer1 = new PerroTimer();
+					PerroTimer timer0 = new PerroTimer();
 					PerroUtils.print("T" + iNumFold + " | Building J48", true);
 					clsJ48.buildClassifier(dataTrain);
+									
+					timer0.stop();
+					PerroTimer timer1 = new PerroTimer();
+					PerroUtils.print("T" + iNumFold + " | Building AttributeSel J48", true);
+					clsAttSelJ48.buildClassifier(dataTrain);
 
 					timer1.stop();
 					PerroTimer timer2 = new PerroTimer();
@@ -178,10 +185,14 @@ public class ClassCompStratCV_MT {
 					
 					
 					// start evaluation
-					// J48
+					// AttributeSelection + J48
 					Evaluation eval = new Evaluation(dataTrain);
 					eval.evaluateModel(clsJ48, dataTest);
-					tmpClPerf.getLstClsPerf().add(getClassifierPerformanceValues(clsJ48.getClass().getSimpleName(), eval, timer1.getElapsedS()));
+					tmpClPerf.getLstClsPerf().add(getClassifierPerformanceValues(clsJ48.getClass().getSimpleName(), eval, timer0.getElapsedS()));
+				
+					// AttributeSelection + J48
+					eval.evaluateModel(clsAttSelJ48, dataTest);
+					tmpClPerf.getLstClsPerf().add(getClassifierPerformanceValues(clsAttSelJ48.getClass().getSimpleName(), eval, timer1.getElapsedS()));
 		//			PerroUtils.print("\nJ48:\n" + eval.toClassDetailsString());
 					
 					// Bayes
