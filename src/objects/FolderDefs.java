@@ -21,4 +21,5 @@ public class FolderDefs {
 	public static final String routesFolderName = "routes/";
 	public static final String tasksFolderName = "tasks_def/";
 
+	public static final int numThreadsForResolution = 8;
 }

@@ -26,6 +26,7 @@ import com.thoughtworks.xstream.security.NoTypePermission;
 
 import dataset.DSPlotter;
 import dataset.GenerateDataSet;
+import gnu.trove.map.TMap;
 import launchers.BatchLauncher;
 import objects.*;
 import problem.Solver1;
@@ -166,13 +167,15 @@ public class BatchClassifier {
 			    .buildEmail();
 		PerroUtils.emailSender(email);
 
+		int iNumIterations = 0;
 		// outer loop: execute per each of the .arff file stored in the file list
 		for (FileParse tmpObj : lstFileToBeParsed)
 			tmpObj.setbTestSet(false);
 			long lTimerForFirstIteration = System.currentTimeMillis();
-		
+			
+			PerroUtils.print("** Iteration #" + iNumIterations++ + " of " + lstFileToBeParsed.size(), true);
+			
 		    try {
-		    	
 		    	for (FileParse objFileParse : lstFileToBeParsed) {
 		    		// inner loop:
 		    		
@@ -210,13 +213,13 @@ public class BatchClassifier {
 						
 						if (!tmpFP.isbTestSet()) {			// skip if the dataset has to be used for test and evaluation
 							
-							PerroUtils.print(" Loading #" + lstFileToBeParsed.indexOf(tmpFP) + " - " + strDataSetFileName);
+							//PerroUtils.print(" Loading #" + lstFileToBeParsed.indexOf(tmpFP) + " - " + strDataSetFileName);
 				
 					    	// loads the arff file corresponding to the current job
 					    	ArffLoader loader = new ArffLoader();    	
 							loader.setFile(new File(strDataSetFileName));
 								
-							PerroUtils.print(" +--- Adding instances...");
+							// PerroUtils.print(" +--- Adding instances...");
 							Instances tmpInst = loader.getDataSet();
 							tmpInst.setClassIndex(tmpInst.numAttributes()-1);
 							dataTrain.addAll(tmpInst);
@@ -315,12 +318,12 @@ public class BatchClassifier {
 				    // generate a temp ClassifierStats object and starts populating it
 				    ClassifierStats tmpClassStat = new ClassifierStats();
 				    tmpClassStat.setNumResources(lstResources.size());
-					tmpClassStat.setiNumThreads(24);
+					tmpClassStat.setiNumThreads(FolderDefs.numThreadsForResolution);
 	
 					// launch the solver on the original problem with the specified number of threads and stores the results
 					// for the original problem I want the results to be stored on disk
 				    SolStats tmpSolStat = new SolStats();		    
-				    tmpSolStat = problemSolver.launchSolver(false, true, bTestSetResourcesReturnToOrigin, 24, strPathTmp);
+				    tmpSolStat = problemSolver.launchSolver(false, true, bTestSetResourcesReturnToOrigin, FolderDefs.numThreadsForResolution, strPathTmp);
 				    
 					// generation of a plot using DSPlotter
 					DSPlotter dsPlot = new DSPlotter(1000, 1000, strXMLFileName);
@@ -375,7 +378,7 @@ public class BatchClassifier {
 					Solver1 prunedProblemSolver = new Solver1(strPathTmp, strPrunedXMLFileName);
 					
 					// launch the solver on the pruned problem with 24 threads and stores the results w/o storing solution results
-				    tmpSolStat = prunedProblemSolver.launchSolver(false, false, bTestSetResourcesReturnToOrigin, 24, strPathTmp);
+				    tmpSolStat = prunedProblemSolver.launchSolver(false, false, bTestSetResourcesReturnToOrigin, FolderDefs.numThreadsForResolution, strPathTmp);
 				    
 				    // create another plot for pruned ds
 				    dsPlot.clear();
@@ -543,7 +546,7 @@ public class BatchClassifier {
 					Solver1 RNDPrunedProblemSolver = new Solver1(strPathTmp, strPrRNDXMLFileName);
 					
 					// launch the solver on the pruned problem with 7 threads and stores the results w/o storing solution results
-				    tmpSolStat = RNDPrunedProblemSolver.launchSolver(false, false, bTestSetResourcesReturnToOrigin, 24, strPathTmp);
+				    tmpSolStat = RNDPrunedProblemSolver.launchSolver(false, false, bTestSetResourcesReturnToOrigin, FolderDefs.numThreadsForResolution, strPathTmp);
 
 				    // create another plot for pruned ds
 				    dsPlot.clear();
@@ -614,7 +617,7 @@ public class BatchClassifier {
 					Solver1 RND2PrunedProblemSolver = new Solver1(strPathTmp, strPrRND2XMLFileName);
 					
 					// launch the solver on the pruned problem with 7 threads and stores the results w/o storing solution results
-				    tmpSolStat = RND2PrunedProblemSolver.launchSolver(false, false, bTestSetResourcesReturnToOrigin, 24, strPathTmp);
+				    tmpSolStat = RND2PrunedProblemSolver.launchSolver(false, false, bTestSetResourcesReturnToOrigin, FolderDefs.numThreadsForResolution, strPathTmp);
 
 				    // create another plot for pruned ds
 				    dsPlot.clear();
@@ -655,6 +658,19 @@ public class BatchClassifier {
 					
 		    		// de-select the evaluation test set for the object currently loaded dataset (there must be only one dataset set for evaluation per loop iteration)
 		    		objFileParse.setbTestSet(false);
+		    		
+					if (bFirstLoop) {
+						bFirstLoop = false;
+						long elapsedTimeAtFirstIteration = (System.currentTimeMillis() - lTimerForFirstIteration)/1000;
+						long estimatedCompletion = elapsedTimeAtFirstIteration * lstFileToBeParsed.size();
+						Email intermediateEmail = EmailBuilder.startingBlank()
+							    .from("Giovanni Perrone", "gperrone71@yahoo.it")
+							    .to("Me", "gperrone71@gmail.com")
+							    .withSubject("PAPERVRPTW-CLASSIFIER: First iteration for " + strPath + " complete")
+							    .withPlainText("First iteration complete after " + elapsedTimeAtFirstIteration + " s (" + elapsedTimeAtFirstIteration/3600 + " hours) \nEstimated " + (estimatedCompletion) + " s (" + estimatedCompletion/3600 + " hours) to complete." )
+							    .buildEmail();
+						PerroUtils.emailSender(intermediateEmail);	
+					}
 	
 		    	}			
 	
@@ -665,18 +681,6 @@ public class BatchClassifier {
 				ClassifiersUtils.pruningStatsToCSV(false, strPath, "_PRCOMP", lstPruningCompareStats);
 				
 				// if this has been the first iteration then send an email with the time elapsed for the first loop
-				if (bFirstLoop) {
-					bFirstLoop = false;
-					long elapsedTimeAtFirstIteration = (System.currentTimeMillis() - lTimerForFirstIteration)/1000;
-					long estimatedCompletion = elapsedTimeAtFirstIteration * lstFileToBeParsed.size();
-					Email intermediateEmail = EmailBuilder.startingBlank()
-						    .from("Giovanni Perrone", "gperrone71@yahoo.it")
-						    .to("Me", "gperrone71@gmail.com")
-						    .withSubject("PAPERVRPTW-CLASSIFIER: First iteration for " + strPath + " complete")
-						    .withPlainText("First iteration complete after " + elapsedTimeAtFirstIteration + " s (" + elapsedTimeAtFirstIteration/3600 + " hours) \nEstimated " + (estimatedCompletion) + " s (" + estimatedCompletion/3600 + " hours) to complete." )
-						    .buildEmail();
-					PerroUtils.emailSender(intermediateEmail);	
-				}
 	
 	/*	
 				 String[] options = new String[2];

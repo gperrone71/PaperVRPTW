@@ -244,7 +244,7 @@ public class ForwardClassifier {
 							    
 								// launch the solver and store the results into a temporary stats object
 							    SolStats tmpSolStat = new SolStats();		    	    
-								tmpSolStat = problemSolver.launchSolver(false, false, true, 24, "fwd_output/");
+								tmpSolStat = problemSolver.launchSolver(false, false, true, FolderDefs.numThreadsForResolution, "fwd_output/");
 
 							    // generate the information on timestamp and hash
 							    tmpClassStat.setStrFullTimeStamp(new SimpleDateFormat("dd/MM/yyyy HH.mm.ss").format(new Date()));
@@ -277,7 +277,7 @@ public class ForwardClassifier {
 								tmpClassStat.setDbTasksDensity_P(prunedProblemSolver.getDbTskDens());
 
 								// launch the solver on the pruned problem with 24 threads and stores the results
-							    tmpSolStat = prunedProblemSolver.launchSolver(false, false, true, 24, "fwd_output/");
+							    tmpSolStat = prunedProblemSolver.launchSolver(false, false, true, FolderDefs.numThreadsForResolution, "fwd_output/");
 
 							    // and copies the relevant information in the ClassifierStats object in the section for the pruned dataset
 								tmpClassStat.setNumTasks_P(lstPrunedTasks.size());
